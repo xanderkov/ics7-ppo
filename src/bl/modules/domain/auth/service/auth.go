@@ -34,3 +34,4 @@ func (r *AuthService) SignUp(ctx context.Context, newUser *dto.NewUser) (*doctor
 
 	return createdUser, nil
 }
+	
