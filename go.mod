@@ -2,8 +2,10 @@ module hospital
 
 go 1.20
 
-require go.uber.org/fx v1.19.2
-
+require (
+	go.uber.org/fx v1.19.2
+	github.com/golang/mock v1.6.0
+)
 require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/dig v1.16.1 // indirect

@@ -1,34 +1,34 @@
 package dto
 
 type Patient struct {
-	id             int32
-	surname        string
-	name 		   string
-	patronymic 	   string
-	height 		   int32
-	weight 		   float32
-	roomNumber     int32
-	degreeOfDanger int32
+	Id             int32
+	Surname        string
+	Name           string
+	Patronymic     string
+	Height         int32
+	Weight         float32
+	RoomNumber     int32
+	DegreeOfDanger int32
 }
 
 type Patients []*Patient
 
 type CreatePatient struct {
-	surname        string
-	name 		   string
-	patronymic 	   string
-	height 		   int32
-	weight 		   float32
-	roomNumber     int32
-	degreeOfDanger int32
+	Surname        string
+	Name           string
+	Patronymic     string
+	Height         int32
+	Weight         float32
+	RoomNumber     int32
+	DegreeOfDanger int32
 }
 
-type UpdatePatient {
-	surname        string
-	name 		   string
-	patronymic 	   string
-	height 		   int32
-	weight 		   float32
-	roomNumber     int32
-	degreeOfDanger int32
+type UpdatePatient struct {
+	Surname        string
+	Name           string
+	Patronymic     string
+	Height         int32
+	Weight         float32
+	RoomNumber     int32
+	DegreeOfDanger int32
 }

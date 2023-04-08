@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
-	"hospital/src/bl/modules/room/dto"
+	"hospital/src/bl/modules/domain/room/dto"
 )
+
+//go:generate mockgen -destination mock_test.go -package service . IRoomRepo
 
 type IRoomRepo interface {
 	GetByNum(ctx context.Context, num int32) (*dto.Room, error)
@@ -13,11 +15,9 @@ type IRoomRepo interface {
 	Delete(ctx context.Context, num int32) error
 }
 
-
 type RoomService struct {
 	repo IRoomRepo
 }
-
 
 func NewRoomService(repo IRoomRepo) *RoomService {
 	return &RoomService{

@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
-	"hospital/src/bl/modules/dayPlan/dto"
-	"hospital/src/bl/modules/doctor/dto"
+	"hospital/src/bl/modules/domain/auth/dto"
+	doctor_dto "hospital/src/bl/modules/domain/doctor/dto"
 )
 
+//go:generate mockgen -destination mock_test.go -package service . IUserRepo
 
 type IUserRepo interface {
 	GetByTokenId(ctx context.Context, tokenId int32) (*doctor_dto.Doctor, error)
@@ -13,17 +14,17 @@ type IUserRepo interface {
 }
 
 type AuthService struct {
-	repo   IUserRepo
+	repo    IUserRepo
 	tokenId int32
 }
 
 func (r *AuthService) SignUp(ctx context.Context, newUser *dto.NewUser) (*doctor_dto.Doctor, error) {
 
-	createUser := &doctor_dto.CreateUser{
-		Suranme:      newUser.surname,
-		TokenId:      newUser.tokenId,
-		speciality    newUser.speciality,
-		role          newUser.role
+	createUser := &doctor_dto.CreateDoctor{
+		Surname:    newUser.Surname,
+		TokenId:    newUser.TokenId,
+		Speciality: newUser.Speciality,
+		Role:       newUser.Role,
 	}
 
 	// Создаем пользователя
@@ -34,4 +35,3 @@ func (r *AuthService) SignUp(ctx context.Context, newUser *dto.NewUser) (*doctor
 
 	return createdUser, nil
 }
-	

@@ -1,19 +1,19 @@
 package dto
 
 type DayPlan struct {
-	id             int32
-	idDoc          int32
-	patientsId	   []int32
+	Id         int32
+	IdDoc      int32
+	PatientsId []int32
 }
 
 type DayPlans []*DayPlan
 
 type CalculateDay struct {
-	idDoc	       int32
-	patientsId 	   int32
+	IdDoc      int32
+	PatientsId int32
 }
 
-type ChangeDay {
-	idDoc        *int32
-	patientsId	 *int32
+type ChangeDay struct {
+	IdDoc      *int32
+	PatientsId *int32
 }

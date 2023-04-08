@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
-	"hospital/src/bl/modules/doctor/dto"
+	"hospital/src/bl/modules/domain/doctor/dto"
 )
+
+//go:generate mockgen -destination mock_test.go -package service . IDoctorRepo
 
 type IDoctorRepo interface {
 	GetById(ctx context.Context, id int32) (*dto.Doctor, error)
@@ -13,11 +15,9 @@ type IDoctorRepo interface {
 	Delete(ctx context.Context, num int32) error
 }
 
-
 type DoctorService struct {
 	repo IDoctorRepo
 }
-
 
 func NewDoctorService(repo IDoctorRepo) *DoctorService {
 	return &DoctorService{
