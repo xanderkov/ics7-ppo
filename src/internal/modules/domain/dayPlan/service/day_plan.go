@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"hospital/src/bl/modules/domain/dayPlan/dto"
+	"hospital/src/internal/modules/domain/dayPlan/dto"
 )
 
 //go:generate mockgen -destination mock_test.go -package service . IDayPlanRepo

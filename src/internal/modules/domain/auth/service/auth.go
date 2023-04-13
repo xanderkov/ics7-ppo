@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"hospital/src/bl/modules/domain/auth/dto"
-	doctor_dto "hospital/src/bl/modules/domain/doctor/dto"
+	"hospital/src/internal/modules/domain/auth/dto"
+	doctor_dto "hospital/src/internal/modules/domain/doctor/dto"
 )
 
 //go:generate mockgen -destination mock_test.go -package service . IUserRepo
