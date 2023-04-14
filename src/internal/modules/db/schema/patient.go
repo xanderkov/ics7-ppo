@@ -1,6 +1,9 @@
 package schema
 
-import "entgo.io/ent"
+import (
+	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
+)
 
 // Patient holds the schema definition for the Patient entity.
 type Patient struct {
@@ -14,5 +17,8 @@ func (Patient) Fields() []ent.Field {
 
 // Edges of the Patient.
 func (Patient) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("doctor", Doctor.Type).
+			Ref("treats"),
+	}
 }
