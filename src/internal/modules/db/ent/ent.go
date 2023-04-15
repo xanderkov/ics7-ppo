@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hospital/src/internal/modules/db/ent/doctor"
 	"hospital/src/internal/modules/db/ent/patient"
+	"hospital/src/internal/modules/db/ent/room"
 	"reflect"
 	"sync"
 
@@ -76,6 +77,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			doctor.Table:  doctor.ValidColumn,
 			patient.Table: patient.ValidColumn,
+			room.Table:    room.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

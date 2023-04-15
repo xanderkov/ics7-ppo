@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"hospital/src/internal/modules/db/ent/patient"
+	"hospital/src/internal/modules/db/ent/room"
 	"strings"
 
 	"entgo.io/ent"
@@ -13,9 +14,23 @@ import (
 
 // Patient is the model entity for the Patient schema.
 type Patient struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Surname holds the value of the "surname" field.
+	Surname string `json:"surname,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
+	// Patronymic holds the value of the "patronymic" field.
+	Patronymic string `json:"patronymic,omitempty"`
+	// Height holds the value of the "height" field.
+	Height int32 `json:"height,omitempty"`
+	// Weight holds the value of the "weight" field.
+	Weight int32 `json:"weight,omitempty"`
+	// RoomNumber holds the value of the "roomNumber" field.
+	RoomNumber int `json:"roomNumber,omitempty"`
+	// DegreeOfDanger holds the value of the "degreeOfDanger" field.
+	DegreeOfDanger int32 `json:"degreeOfDanger,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PatientQuery when eager-loading is set.
 	Edges        PatientEdges `json:"edges"`
@@ -24,17 +39,32 @@ type Patient struct {
 
 // PatientEdges holds the relations/edges for other nodes in the graph.
 type PatientEdges struct {
+	// Room holds the value of the room edge.
+	Room *Room `json:"room,omitempty"`
 	// Doctor holds the value of the doctor edge.
 	Doctor []*Doctor `json:"doctor,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
+}
+
+// RoomOrErr returns the Room value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PatientEdges) RoomOrErr() (*Room, error) {
+	if e.loadedTypes[0] {
+		if e.Room == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: room.Label}
+		}
+		return e.Room, nil
+	}
+	return nil, &NotLoadedError{edge: "room"}
 }
 
 // DoctorOrErr returns the Doctor value or an error if the edge
 // was not loaded in eager-loading.
 func (e PatientEdges) DoctorOrErr() ([]*Doctor, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.Doctor, nil
 	}
 	return nil, &NotLoadedError{edge: "doctor"}
@@ -45,8 +75,10 @@ func (*Patient) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case patient.FieldID:
+		case patient.FieldID, patient.FieldHeight, patient.FieldWeight, patient.FieldRoomNumber, patient.FieldDegreeOfDanger:
 			values[i] = new(sql.NullInt64)
+		case patient.FieldSurname, patient.FieldName, patient.FieldPatronymic:
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -68,6 +100,48 @@ func (pa *Patient) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			pa.ID = int(value.Int64)
+		case patient.FieldSurname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field surname", values[i])
+			} else if value.Valid {
+				pa.Surname = value.String
+			}
+		case patient.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				pa.Name = value.String
+			}
+		case patient.FieldPatronymic:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field patronymic", values[i])
+			} else if value.Valid {
+				pa.Patronymic = value.String
+			}
+		case patient.FieldHeight:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field height", values[i])
+			} else if value.Valid {
+				pa.Height = int32(value.Int64)
+			}
+		case patient.FieldWeight:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field weight", values[i])
+			} else if value.Valid {
+				pa.Weight = int32(value.Int64)
+			}
+		case patient.FieldRoomNumber:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field roomNumber", values[i])
+			} else if value.Valid {
+				pa.RoomNumber = int(value.Int64)
+			}
+		case patient.FieldDegreeOfDanger:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field degreeOfDanger", values[i])
+			} else if value.Valid {
+				pa.DegreeOfDanger = int32(value.Int64)
+			}
 		default:
 			pa.selectValues.Set(columns[i], values[i])
 		}
@@ -79,6 +153,11 @@ func (pa *Patient) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (pa *Patient) Value(name string) (ent.Value, error) {
 	return pa.selectValues.Get(name)
+}
+
+// QueryRoom queries the "room" edge of the Patient entity.
+func (pa *Patient) QueryRoom() *RoomQuery {
+	return NewPatientClient(pa.config).QueryRoom(pa)
 }
 
 // QueryDoctor queries the "doctor" edge of the Patient entity.
@@ -108,7 +187,27 @@ func (pa *Patient) Unwrap() *Patient {
 func (pa *Patient) String() string {
 	var builder strings.Builder
 	builder.WriteString("Patient(")
-	builder.WriteString(fmt.Sprintf("id=%v", pa.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", pa.ID))
+	builder.WriteString("surname=")
+	builder.WriteString(pa.Surname)
+	builder.WriteString(", ")
+	builder.WriteString("name=")
+	builder.WriteString(pa.Name)
+	builder.WriteString(", ")
+	builder.WriteString("patronymic=")
+	builder.WriteString(pa.Patronymic)
+	builder.WriteString(", ")
+	builder.WriteString("height=")
+	builder.WriteString(fmt.Sprintf("%v", pa.Height))
+	builder.WriteString(", ")
+	builder.WriteString("weight=")
+	builder.WriteString(fmt.Sprintf("%v", pa.Weight))
+	builder.WriteString(", ")
+	builder.WriteString("roomNumber=")
+	builder.WriteString(fmt.Sprintf("%v", pa.RoomNumber))
+	builder.WriteString(", ")
+	builder.WriteString("degreeOfDanger=")
+	builder.WriteString(fmt.Sprintf("%v", pa.DegreeOfDanger))
 	builder.WriteByte(')')
 	return builder.String()
 }

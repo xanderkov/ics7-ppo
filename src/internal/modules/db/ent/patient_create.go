@@ -4,9 +4,11 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"hospital/src/internal/modules/db/ent/doctor"
 	"hospital/src/internal/modules/db/ent/patient"
+	"hospital/src/internal/modules/db/ent/room"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -17,6 +19,59 @@ type PatientCreate struct {
 	config
 	mutation *PatientMutation
 	hooks    []Hook
+}
+
+// SetSurname sets the "surname" field.
+func (pc *PatientCreate) SetSurname(s string) *PatientCreate {
+	pc.mutation.SetSurname(s)
+	return pc
+}
+
+// SetName sets the "name" field.
+func (pc *PatientCreate) SetName(s string) *PatientCreate {
+	pc.mutation.SetName(s)
+	return pc
+}
+
+// SetPatronymic sets the "patronymic" field.
+func (pc *PatientCreate) SetPatronymic(s string) *PatientCreate {
+	pc.mutation.SetPatronymic(s)
+	return pc
+}
+
+// SetHeight sets the "height" field.
+func (pc *PatientCreate) SetHeight(i int32) *PatientCreate {
+	pc.mutation.SetHeight(i)
+	return pc
+}
+
+// SetWeight sets the "weight" field.
+func (pc *PatientCreate) SetWeight(i int32) *PatientCreate {
+	pc.mutation.SetWeight(i)
+	return pc
+}
+
+// SetRoomNumber sets the "roomNumber" field.
+func (pc *PatientCreate) SetRoomNumber(i int) *PatientCreate {
+	pc.mutation.SetRoomNumber(i)
+	return pc
+}
+
+// SetDegreeOfDanger sets the "degreeOfDanger" field.
+func (pc *PatientCreate) SetDegreeOfDanger(i int32) *PatientCreate {
+	pc.mutation.SetDegreeOfDanger(i)
+	return pc
+}
+
+// SetRoomID sets the "room" edge to the Room entity by ID.
+func (pc *PatientCreate) SetRoomID(id int) *PatientCreate {
+	pc.mutation.SetRoomID(id)
+	return pc
+}
+
+// SetRoom sets the "room" edge to the Room entity.
+func (pc *PatientCreate) SetRoom(r *Room) *PatientCreate {
+	return pc.SetRoomID(r.ID)
 }
 
 // AddDoctorIDs adds the "doctor" edge to the Doctor entity by IDs.
@@ -68,6 +123,30 @@ func (pc *PatientCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (pc *PatientCreate) check() error {
+	if _, ok := pc.mutation.Surname(); !ok {
+		return &ValidationError{Name: "surname", err: errors.New(`ent: missing required field "Patient.surname"`)}
+	}
+	if _, ok := pc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Patient.name"`)}
+	}
+	if _, ok := pc.mutation.Patronymic(); !ok {
+		return &ValidationError{Name: "patronymic", err: errors.New(`ent: missing required field "Patient.patronymic"`)}
+	}
+	if _, ok := pc.mutation.Height(); !ok {
+		return &ValidationError{Name: "height", err: errors.New(`ent: missing required field "Patient.height"`)}
+	}
+	if _, ok := pc.mutation.Weight(); !ok {
+		return &ValidationError{Name: "weight", err: errors.New(`ent: missing required field "Patient.weight"`)}
+	}
+	if _, ok := pc.mutation.RoomNumber(); !ok {
+		return &ValidationError{Name: "roomNumber", err: errors.New(`ent: missing required field "Patient.roomNumber"`)}
+	}
+	if _, ok := pc.mutation.DegreeOfDanger(); !ok {
+		return &ValidationError{Name: "degreeOfDanger", err: errors.New(`ent: missing required field "Patient.degreeOfDanger"`)}
+	}
+	if _, ok := pc.mutation.RoomID(); !ok {
+		return &ValidationError{Name: "room", err: errors.New(`ent: missing required edge "Patient.room"`)}
+	}
 	return nil
 }
 
@@ -94,6 +173,47 @@ func (pc *PatientCreate) createSpec() (*Patient, *sqlgraph.CreateSpec) {
 		_node = &Patient{config: pc.config}
 		_spec = sqlgraph.NewCreateSpec(patient.Table, sqlgraph.NewFieldSpec(patient.FieldID, field.TypeInt))
 	)
+	if value, ok := pc.mutation.Surname(); ok {
+		_spec.SetField(patient.FieldSurname, field.TypeString, value)
+		_node.Surname = value
+	}
+	if value, ok := pc.mutation.Name(); ok {
+		_spec.SetField(patient.FieldName, field.TypeString, value)
+		_node.Name = value
+	}
+	if value, ok := pc.mutation.Patronymic(); ok {
+		_spec.SetField(patient.FieldPatronymic, field.TypeString, value)
+		_node.Patronymic = value
+	}
+	if value, ok := pc.mutation.Height(); ok {
+		_spec.SetField(patient.FieldHeight, field.TypeInt32, value)
+		_node.Height = value
+	}
+	if value, ok := pc.mutation.Weight(); ok {
+		_spec.SetField(patient.FieldWeight, field.TypeInt32, value)
+		_node.Weight = value
+	}
+	if value, ok := pc.mutation.DegreeOfDanger(); ok {
+		_spec.SetField(patient.FieldDegreeOfDanger, field.TypeInt32, value)
+		_node.DegreeOfDanger = value
+	}
+	if nodes := pc.mutation.RoomIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   patient.RoomTable,
+			Columns: []string{patient.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.RoomNumber = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := pc.mutation.DoctorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,

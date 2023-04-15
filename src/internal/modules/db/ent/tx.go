@@ -16,6 +16,8 @@ type Tx struct {
 	Doctor *DoctorClient
 	// Patient is the client for interacting with the Patient builders.
 	Patient *PatientClient
+	// Room is the client for interacting with the Room builders.
+	Room *RoomClient
 
 	// lazily loaded.
 	client     *Client
@@ -149,6 +151,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Doctor = NewDoctorClient(tx.config)
 	tx.Patient = NewPatientClient(tx.config)
+	tx.Room = NewRoomClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

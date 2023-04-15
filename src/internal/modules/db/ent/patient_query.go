@@ -9,6 +9,7 @@ import (
 	"hospital/src/internal/modules/db/ent/doctor"
 	"hospital/src/internal/modules/db/ent/patient"
 	"hospital/src/internal/modules/db/ent/predicate"
+	"hospital/src/internal/modules/db/ent/room"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
@@ -23,6 +24,7 @@ type PatientQuery struct {
 	order      []patient.Order
 	inters     []Interceptor
 	predicates []predicate.Patient
+	withRoom   *RoomQuery
 	withDoctor *DoctorQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -58,6 +60,28 @@ func (pq *PatientQuery) Unique(unique bool) *PatientQuery {
 func (pq *PatientQuery) Order(o ...patient.Order) *PatientQuery {
 	pq.order = append(pq.order, o...)
 	return pq
+}
+
+// QueryRoom chains the current query on the "room" edge.
+func (pq *PatientQuery) QueryRoom() *RoomQuery {
+	query := (&RoomClient{config: pq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(patient.Table, patient.FieldID, selector),
+			sqlgraph.To(room.Table, room.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, patient.RoomTable, patient.RoomColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryDoctor chains the current query on the "doctor" edge.
@@ -274,11 +298,23 @@ func (pq *PatientQuery) Clone() *PatientQuery {
 		order:      append([]patient.Order{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Patient{}, pq.predicates...),
+		withRoom:   pq.withRoom.Clone(),
 		withDoctor: pq.withDoctor.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
 	}
+}
+
+// WithRoom tells the query-builder to eager-load the nodes that are connected to
+// the "room" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PatientQuery) WithRoom(opts ...func(*RoomQuery)) *PatientQuery {
+	query := (&RoomClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withRoom = query
+	return pq
 }
 
 // WithDoctor tells the query-builder to eager-load the nodes that are connected to
@@ -294,6 +330,18 @@ func (pq *PatientQuery) WithDoctor(opts ...func(*DoctorQuery)) *PatientQuery {
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Surname string `json:"surname,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Patient.Query().
+//		GroupBy(patient.FieldSurname).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (pq *PatientQuery) GroupBy(field string, fields ...string) *PatientGroupBy {
 	pq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &PatientGroupBy{build: pq}
@@ -305,6 +353,16 @@ func (pq *PatientQuery) GroupBy(field string, fields ...string) *PatientGroupBy 
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		Surname string `json:"surname,omitempty"`
+//	}
+//
+//	client.Patient.Query().
+//		Select(patient.FieldSurname).
+//		Scan(ctx, &v)
 func (pq *PatientQuery) Select(fields ...string) *PatientSelect {
 	pq.ctx.Fields = append(pq.ctx.Fields, fields...)
 	sbuild := &PatientSelect{PatientQuery: pq}
@@ -348,7 +406,8 @@ func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pati
 	var (
 		nodes       = []*Patient{}
 		_spec       = pq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
+			pq.withRoom != nil,
 			pq.withDoctor != nil,
 		}
 	)
@@ -370,6 +429,12 @@ func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pati
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := pq.withRoom; query != nil {
+		if err := pq.loadRoom(ctx, query, nodes, nil,
+			func(n *Patient, e *Room) { n.Edges.Room = e }); err != nil {
+			return nil, err
+		}
+	}
 	if query := pq.withDoctor; query != nil {
 		if err := pq.loadDoctor(ctx, query, nodes,
 			func(n *Patient) { n.Edges.Doctor = []*Doctor{} },
@@ -380,6 +445,35 @@ func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pati
 	return nodes, nil
 }
 
+func (pq *PatientQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes []*Patient, init func(*Patient), assign func(*Patient, *Room)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Patient)
+	for i := range nodes {
+		fk := nodes[i].RoomNumber
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(room.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "roomNumber" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (pq *PatientQuery) loadDoctor(ctx context.Context, query *DoctorQuery, nodes []*Patient, init func(*Patient), assign func(*Patient, *Doctor)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[int]*Patient)
@@ -466,6 +560,9 @@ func (pq *PatientQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != patient.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if pq.withRoom != nil {
+			_spec.Node.AddColumnOnce(patient.FieldRoomNumber)
 		}
 	}
 	if ps := pq.predicates; len(ps) > 0 {

@@ -12,10 +12,33 @@ const (
 	Label = "patient"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldSurname holds the string denoting the surname field in the database.
+	FieldSurname = "surname"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
+	// FieldPatronymic holds the string denoting the patronymic field in the database.
+	FieldPatronymic = "patronymic"
+	// FieldHeight holds the string denoting the height field in the database.
+	FieldHeight = "height"
+	// FieldWeight holds the string denoting the weight field in the database.
+	FieldWeight = "weight"
+	// FieldRoomNumber holds the string denoting the roomnumber field in the database.
+	FieldRoomNumber = "room_number"
+	// FieldDegreeOfDanger holds the string denoting the degreeofdanger field in the database.
+	FieldDegreeOfDanger = "degree_of_danger"
+	// EdgeRoom holds the string denoting the room edge name in mutations.
+	EdgeRoom = "room"
 	// EdgeDoctor holds the string denoting the doctor edge name in mutations.
 	EdgeDoctor = "doctor"
 	// Table holds the table name of the patient in the database.
 	Table = "patients"
+	// RoomTable is the table that holds the room relation/edge.
+	RoomTable = "patients"
+	// RoomInverseTable is the table name for the Room entity.
+	// It exists in this package in order to avoid circular dependency with the "room" package.
+	RoomInverseTable = "rooms"
+	// RoomColumn is the table column denoting the room relation/edge.
+	RoomColumn = "room_number"
 	// DoctorTable is the table that holds the doctor relation/edge. The primary key declared below.
 	DoctorTable = "doctor_patient"
 	// DoctorInverseTable is the table name for the Doctor entity.
@@ -26,6 +49,13 @@ const (
 // Columns holds all SQL columns for patient fields.
 var Columns = []string{
 	FieldID,
+	FieldSurname,
+	FieldName,
+	FieldPatronymic,
+	FieldHeight,
+	FieldWeight,
+	FieldRoomNumber,
+	FieldDegreeOfDanger,
 }
 
 var (
@@ -52,6 +82,48 @@ func ByID(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// BySurname orders the results by the surname field.
+func BySurname(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldSurname, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByPatronymic orders the results by the patronymic field.
+func ByPatronymic(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldPatronymic, opts...).ToFunc()
+}
+
+// ByHeight orders the results by the height field.
+func ByHeight(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldHeight, opts...).ToFunc()
+}
+
+// ByWeight orders the results by the weight field.
+func ByWeight(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldWeight, opts...).ToFunc()
+}
+
+// ByRoomNumber orders the results by the roomNumber field.
+func ByRoomNumber(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldRoomNumber, opts...).ToFunc()
+}
+
+// ByDegreeOfDanger orders the results by the degreeOfDanger field.
+func ByDegreeOfDanger(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldDegreeOfDanger, opts...).ToFunc()
+}
+
+// ByRoomField orders the results by room field.
+func ByRoomField(field string, opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRoomStep(), sql.OrderByField(field, opts...))
+	}
+}
+
 // ByDoctorCount orders the results by doctor count.
 func ByDoctorCount(opts ...sql.OrderTermOption) Order {
 	return func(s *sql.Selector) {
@@ -64,6 +136,13 @@ func ByDoctor(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newDoctorStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
+}
+func newRoomStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RoomInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, RoomTable, RoomColumn),
+	)
 }
 func newDoctorStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

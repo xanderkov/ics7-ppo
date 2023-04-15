@@ -9,6 +9,7 @@ import (
 	"hospital/src/internal/modules/db/ent/doctor"
 	"hospital/src/internal/modules/db/ent/patient"
 	"hospital/src/internal/modules/db/ent/predicate"
+	"hospital/src/internal/modules/db/ent/room"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -26,6 +27,80 @@ type PatientUpdate struct {
 func (pu *PatientUpdate) Where(ps ...predicate.Patient) *PatientUpdate {
 	pu.mutation.Where(ps...)
 	return pu
+}
+
+// SetSurname sets the "surname" field.
+func (pu *PatientUpdate) SetSurname(s string) *PatientUpdate {
+	pu.mutation.SetSurname(s)
+	return pu
+}
+
+// SetName sets the "name" field.
+func (pu *PatientUpdate) SetName(s string) *PatientUpdate {
+	pu.mutation.SetName(s)
+	return pu
+}
+
+// SetPatronymic sets the "patronymic" field.
+func (pu *PatientUpdate) SetPatronymic(s string) *PatientUpdate {
+	pu.mutation.SetPatronymic(s)
+	return pu
+}
+
+// SetHeight sets the "height" field.
+func (pu *PatientUpdate) SetHeight(i int32) *PatientUpdate {
+	pu.mutation.ResetHeight()
+	pu.mutation.SetHeight(i)
+	return pu
+}
+
+// AddHeight adds i to the "height" field.
+func (pu *PatientUpdate) AddHeight(i int32) *PatientUpdate {
+	pu.mutation.AddHeight(i)
+	return pu
+}
+
+// SetWeight sets the "weight" field.
+func (pu *PatientUpdate) SetWeight(i int32) *PatientUpdate {
+	pu.mutation.ResetWeight()
+	pu.mutation.SetWeight(i)
+	return pu
+}
+
+// AddWeight adds i to the "weight" field.
+func (pu *PatientUpdate) AddWeight(i int32) *PatientUpdate {
+	pu.mutation.AddWeight(i)
+	return pu
+}
+
+// SetRoomNumber sets the "roomNumber" field.
+func (pu *PatientUpdate) SetRoomNumber(i int) *PatientUpdate {
+	pu.mutation.SetRoomNumber(i)
+	return pu
+}
+
+// SetDegreeOfDanger sets the "degreeOfDanger" field.
+func (pu *PatientUpdate) SetDegreeOfDanger(i int32) *PatientUpdate {
+	pu.mutation.ResetDegreeOfDanger()
+	pu.mutation.SetDegreeOfDanger(i)
+	return pu
+}
+
+// AddDegreeOfDanger adds i to the "degreeOfDanger" field.
+func (pu *PatientUpdate) AddDegreeOfDanger(i int32) *PatientUpdate {
+	pu.mutation.AddDegreeOfDanger(i)
+	return pu
+}
+
+// SetRoomID sets the "room" edge to the Room entity by ID.
+func (pu *PatientUpdate) SetRoomID(id int) *PatientUpdate {
+	pu.mutation.SetRoomID(id)
+	return pu
+}
+
+// SetRoom sets the "room" edge to the Room entity.
+func (pu *PatientUpdate) SetRoom(r *Room) *PatientUpdate {
+	return pu.SetRoomID(r.ID)
 }
 
 // AddDoctorIDs adds the "doctor" edge to the Doctor entity by IDs.
@@ -46,6 +121,12 @@ func (pu *PatientUpdate) AddDoctor(d ...*Doctor) *PatientUpdate {
 // Mutation returns the PatientMutation object of the builder.
 func (pu *PatientUpdate) Mutation() *PatientMutation {
 	return pu.mutation
+}
+
+// ClearRoom clears the "room" edge to the Room entity.
+func (pu *PatientUpdate) ClearRoom() *PatientUpdate {
+	pu.mutation.ClearRoom()
+	return pu
 }
 
 // ClearDoctor clears all "doctor" edges to the Doctor entity.
@@ -96,7 +177,18 @@ func (pu *PatientUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (pu *PatientUpdate) check() error {
+	if _, ok := pu.mutation.RoomID(); pu.mutation.RoomCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Patient.room"`)
+	}
+	return nil
+}
+
 func (pu *PatientUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := pu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(patient.Table, patient.Columns, sqlgraph.NewFieldSpec(patient.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -104,6 +196,62 @@ func (pu *PatientUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := pu.mutation.Surname(); ok {
+		_spec.SetField(patient.FieldSurname, field.TypeString, value)
+	}
+	if value, ok := pu.mutation.Name(); ok {
+		_spec.SetField(patient.FieldName, field.TypeString, value)
+	}
+	if value, ok := pu.mutation.Patronymic(); ok {
+		_spec.SetField(patient.FieldPatronymic, field.TypeString, value)
+	}
+	if value, ok := pu.mutation.Height(); ok {
+		_spec.SetField(patient.FieldHeight, field.TypeInt32, value)
+	}
+	if value, ok := pu.mutation.AddedHeight(); ok {
+		_spec.AddField(patient.FieldHeight, field.TypeInt32, value)
+	}
+	if value, ok := pu.mutation.Weight(); ok {
+		_spec.SetField(patient.FieldWeight, field.TypeInt32, value)
+	}
+	if value, ok := pu.mutation.AddedWeight(); ok {
+		_spec.AddField(patient.FieldWeight, field.TypeInt32, value)
+	}
+	if value, ok := pu.mutation.DegreeOfDanger(); ok {
+		_spec.SetField(patient.FieldDegreeOfDanger, field.TypeInt32, value)
+	}
+	if value, ok := pu.mutation.AddedDegreeOfDanger(); ok {
+		_spec.AddField(patient.FieldDegreeOfDanger, field.TypeInt32, value)
+	}
+	if pu.mutation.RoomCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   patient.RoomTable,
+			Columns: []string{patient.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RoomIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   patient.RoomTable,
+			Columns: []string{patient.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if pu.mutation.DoctorCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -170,6 +318,80 @@ type PatientUpdateOne struct {
 	mutation *PatientMutation
 }
 
+// SetSurname sets the "surname" field.
+func (puo *PatientUpdateOne) SetSurname(s string) *PatientUpdateOne {
+	puo.mutation.SetSurname(s)
+	return puo
+}
+
+// SetName sets the "name" field.
+func (puo *PatientUpdateOne) SetName(s string) *PatientUpdateOne {
+	puo.mutation.SetName(s)
+	return puo
+}
+
+// SetPatronymic sets the "patronymic" field.
+func (puo *PatientUpdateOne) SetPatronymic(s string) *PatientUpdateOne {
+	puo.mutation.SetPatronymic(s)
+	return puo
+}
+
+// SetHeight sets the "height" field.
+func (puo *PatientUpdateOne) SetHeight(i int32) *PatientUpdateOne {
+	puo.mutation.ResetHeight()
+	puo.mutation.SetHeight(i)
+	return puo
+}
+
+// AddHeight adds i to the "height" field.
+func (puo *PatientUpdateOne) AddHeight(i int32) *PatientUpdateOne {
+	puo.mutation.AddHeight(i)
+	return puo
+}
+
+// SetWeight sets the "weight" field.
+func (puo *PatientUpdateOne) SetWeight(i int32) *PatientUpdateOne {
+	puo.mutation.ResetWeight()
+	puo.mutation.SetWeight(i)
+	return puo
+}
+
+// AddWeight adds i to the "weight" field.
+func (puo *PatientUpdateOne) AddWeight(i int32) *PatientUpdateOne {
+	puo.mutation.AddWeight(i)
+	return puo
+}
+
+// SetRoomNumber sets the "roomNumber" field.
+func (puo *PatientUpdateOne) SetRoomNumber(i int) *PatientUpdateOne {
+	puo.mutation.SetRoomNumber(i)
+	return puo
+}
+
+// SetDegreeOfDanger sets the "degreeOfDanger" field.
+func (puo *PatientUpdateOne) SetDegreeOfDanger(i int32) *PatientUpdateOne {
+	puo.mutation.ResetDegreeOfDanger()
+	puo.mutation.SetDegreeOfDanger(i)
+	return puo
+}
+
+// AddDegreeOfDanger adds i to the "degreeOfDanger" field.
+func (puo *PatientUpdateOne) AddDegreeOfDanger(i int32) *PatientUpdateOne {
+	puo.mutation.AddDegreeOfDanger(i)
+	return puo
+}
+
+// SetRoomID sets the "room" edge to the Room entity by ID.
+func (puo *PatientUpdateOne) SetRoomID(id int) *PatientUpdateOne {
+	puo.mutation.SetRoomID(id)
+	return puo
+}
+
+// SetRoom sets the "room" edge to the Room entity.
+func (puo *PatientUpdateOne) SetRoom(r *Room) *PatientUpdateOne {
+	return puo.SetRoomID(r.ID)
+}
+
 // AddDoctorIDs adds the "doctor" edge to the Doctor entity by IDs.
 func (puo *PatientUpdateOne) AddDoctorIDs(ids ...int) *PatientUpdateOne {
 	puo.mutation.AddDoctorIDs(ids...)
@@ -188,6 +410,12 @@ func (puo *PatientUpdateOne) AddDoctor(d ...*Doctor) *PatientUpdateOne {
 // Mutation returns the PatientMutation object of the builder.
 func (puo *PatientUpdateOne) Mutation() *PatientMutation {
 	return puo.mutation
+}
+
+// ClearRoom clears the "room" edge to the Room entity.
+func (puo *PatientUpdateOne) ClearRoom() *PatientUpdateOne {
+	puo.mutation.ClearRoom()
+	return puo
 }
 
 // ClearDoctor clears all "doctor" edges to the Doctor entity.
@@ -251,7 +479,18 @@ func (puo *PatientUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (puo *PatientUpdateOne) check() error {
+	if _, ok := puo.mutation.RoomID(); puo.mutation.RoomCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Patient.room"`)
+	}
+	return nil
+}
+
 func (puo *PatientUpdateOne) sqlSave(ctx context.Context) (_node *Patient, err error) {
+	if err := puo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(patient.Table, patient.Columns, sqlgraph.NewFieldSpec(patient.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
 	if !ok {
@@ -276,6 +515,62 @@ func (puo *PatientUpdateOne) sqlSave(ctx context.Context) (_node *Patient, err e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := puo.mutation.Surname(); ok {
+		_spec.SetField(patient.FieldSurname, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.Name(); ok {
+		_spec.SetField(patient.FieldName, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.Patronymic(); ok {
+		_spec.SetField(patient.FieldPatronymic, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.Height(); ok {
+		_spec.SetField(patient.FieldHeight, field.TypeInt32, value)
+	}
+	if value, ok := puo.mutation.AddedHeight(); ok {
+		_spec.AddField(patient.FieldHeight, field.TypeInt32, value)
+	}
+	if value, ok := puo.mutation.Weight(); ok {
+		_spec.SetField(patient.FieldWeight, field.TypeInt32, value)
+	}
+	if value, ok := puo.mutation.AddedWeight(); ok {
+		_spec.AddField(patient.FieldWeight, field.TypeInt32, value)
+	}
+	if value, ok := puo.mutation.DegreeOfDanger(); ok {
+		_spec.SetField(patient.FieldDegreeOfDanger, field.TypeInt32, value)
+	}
+	if value, ok := puo.mutation.AddedDegreeOfDanger(); ok {
+		_spec.AddField(patient.FieldDegreeOfDanger, field.TypeInt32, value)
+	}
+	if puo.mutation.RoomCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   patient.RoomTable,
+			Columns: []string{patient.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RoomIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   patient.RoomTable,
+			Columns: []string{patient.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if puo.mutation.DoctorCleared() {
 		edge := &sqlgraph.EdgeSpec{

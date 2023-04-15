@@ -25,12 +25,42 @@ var (
 	// PatientsColumns holds the columns for the "patients" table.
 	PatientsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "surname", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "patronymic", Type: field.TypeString},
+		{Name: "height", Type: field.TypeInt32},
+		{Name: "weight", Type: field.TypeInt32},
+		{Name: "degree_of_danger", Type: field.TypeInt32},
+		{Name: "room_number", Type: field.TypeInt},
 	}
 	// PatientsTable holds the schema information for the "patients" table.
 	PatientsTable = &schema.Table{
 		Name:       "patients",
 		Columns:    PatientsColumns,
 		PrimaryKey: []*schema.Column{PatientsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "patients_rooms_contains",
+				Columns:    []*schema.Column{PatientsColumns[7]},
+				RefColumns: []*schema.Column{RoomsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// RoomsColumns holds the columns for the "rooms" table.
+	RoomsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "number", Type: field.TypeInt32, Unique: true},
+		{Name: "floor", Type: field.TypeInt32},
+		{Name: "number_beds", Type: field.TypeInt32},
+		{Name: "number_patients", Type: field.TypeInt32},
+		{Name: "type_room", Type: field.TypeString},
+	}
+	// RoomsTable holds the schema information for the "rooms" table.
+	RoomsTable = &schema.Table{
+		Name:       "rooms",
+		Columns:    RoomsColumns,
+		PrimaryKey: []*schema.Column{RoomsColumns[0]},
 	}
 	// DoctorPatientColumns holds the columns for the "doctor_patient" table.
 	DoctorPatientColumns = []*schema.Column{
@@ -61,11 +91,13 @@ var (
 	Tables = []*schema.Table{
 		DoctorsTable,
 		PatientsTable,
+		RoomsTable,
 		DoctorPatientTable,
 	}
 )
 
 func init() {
+	PatientsTable.ForeignKeys[0].RefTable = RoomsTable
 	DoctorPatientTable.ForeignKeys[0].RefTable = DoctorsTable
 	DoctorPatientTable.ForeignKeys[1].RefTable = PatientsTable
 }

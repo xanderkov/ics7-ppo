@@ -14,8 +14,10 @@ type Config struct {
 	DBPort string `envconfig:"DB_PORT" default:"5432"`
 	DBName string `envconfig:"DB_NAME" default:"main"`
 
-	AutoMigrate bool   `envconfig:"AUTO_MIGRATE" default:"false"`
-	LogLevel    string `envconfig:"LOG_LEVEL" default:"info" validate:"oneof=debug info warn error dpanic panic fatal"`
+	SQLSlowThreshold int    `envconfig:"SQL_SLOW_THRESHOLD" default:"600"`
+	AutoMigrate      bool   `envconfig:"AUTO_MIGRATE" default:"false"`
+	LogLevel         string `envconfig:"LOG_LEVEL" default:"info" validate:"oneof=debug info warn error dpanic panic fatal"`
+	TraceSQLCommands bool
 }
 
 func NewConfig(app app.App, logger *zap.Logger, logLevel zap.AtomicLevel) (Config, error) {
