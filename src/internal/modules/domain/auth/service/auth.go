@@ -2,36 +2,44 @@ package service
 
 import (
 	"context"
+	"hospital/internal/modules/config"
 	"hospital/internal/modules/domain/auth/dto"
 	doctor_dto "hospital/internal/modules/domain/doctor/dto"
 )
 
 //go:generate mockgen -destination mock_test.go -package service . IUserRepo
 
-type IUserRepo interface {
-	GetByTokenId(ctx context.Context, tokenId int) (*doctor_dto.Doctor, error)
+type IDoctorRepo interface {
+	GetByTokenId(ctx context.Context, tokenId string) (*doctor_dto.Doctor, error)
 	Create(ctx context.Context, dtm *doctor_dto.CreateDoctor) (*doctor_dto.Doctor, error)
 }
 
 type AuthService struct {
-	repo    IUserRepo
-	tokenId int
+	repo    IDoctorRepo
+	tokenId string
 }
 
-func (r *AuthService) SignUp(ctx context.Context, newUser *dto.NewUser) (*doctor_dto.Doctor, error) {
+func NewAuthService(repo IDoctorRepo, config config.Config) *AuthService {
+	return &AuthService{
+		repo:    repo,
+		tokenId: config.Secret,
+	}
+}
 
-	createUser := &doctor_dto.CreateDoctor{
-		Surname:    newUser.Surname,
-		TokenId:    newUser.TokenId,
-		Speciality: newUser.Speciality,
-		Role:       newUser.Role,
+func (r *AuthService) SignUp(ctx context.Context, newDoctor *dto.NewDoctor) (*doctor_dto.Doctor, error) {
+
+	createDoctor := &doctor_dto.CreateDoctor{
+		Surname:    newDoctor.Surname,
+		TokenId:    newDoctor.TokenId,
+		Speciality: newDoctor.Speciality,
+		Role:       newDoctor.Role,
 	}
 
 	// Создаем пользователя
-	createdUser, err := r.repo.Create(ctx, createUser)
+	createdDoctor, err := r.repo.Create(ctx, createDoctor)
 	if err != nil {
 		return nil, err
 	}
 
-	return createdUser, nil
+	return createdDoctor, nil
 }

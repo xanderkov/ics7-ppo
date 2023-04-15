@@ -2,25 +2,18 @@ package domain
 
 import (
 	"go.uber.org/fx"
-	"hospital/internal/modules/domain/doctor/repo"
-	"hospital/internal/modules/domain/doctor/service"
+	"hospital/internal/modules/domain/auth"
+	"hospital/internal/modules/domain/doctor"
 )
 
 var (
 	Module = fx.Options(
-		service.Module,
-		repo.Module,
-
-		fx.Provide(
-			fx.Annotate(
-				func(r *repo.DoctorRepo) *repo.DoctorRepo { return r },
-				fx.As(new(service.IDoctorRepo)),
-			),
-		),
+		doctor.Module,
+		auth.Module,
 	)
-
 	Invokables = fx.Options(
-		service.Invokables,
-		repo.Invokables,
+
+		doctor.Invokables,
+		auth.Invokables,
 	)
 )

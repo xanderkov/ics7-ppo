@@ -9,7 +9,7 @@ type Auth struct {
 
 type Users []*Auth
 
-type NewUser struct {
+type NewDoctor struct {
 	TokenId    string
 	Surname    string
 	Speciality string

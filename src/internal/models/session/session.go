@@ -5,8 +5,8 @@ import (
 )
 
 type Session struct {
-	SessionID      string
-	UserId		   int32
+	SessionID string
+	UserId    int
 }
 
 type sessionCtx struct{}

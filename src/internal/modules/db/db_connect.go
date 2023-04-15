@@ -19,7 +19,7 @@ import (
 
 func connectDB(cfg config.Config, logger *zap.Logger) (*ent.Client, error) {
 
-	connString := "host=localhost port=5432 user=postgres dbname=server_db password=postgres sslmode=disable"
+	connString := "host=localhost port=5432 user=postgres dbname=hospital password=postgres sslmode=disable"
 
 	db, err := sql.Open(dialect.Postgres, connString)
 	if err != nil {
