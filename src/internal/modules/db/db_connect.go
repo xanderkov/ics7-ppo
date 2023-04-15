@@ -11,15 +11,19 @@ import (
 	"hospital/internal/modules/db/ent"
 	"hospital/internal/modules/db/trace_driver"
 	"time"
+
+	_ "hospital/internal/modules/db/ent/runtime"
+	// _ "github.com/jackc/pgx/v4/stdlib"
+	_ "github.com/lib/pq"
 )
 
 func connectDB(cfg config.Config, logger *zap.Logger) (*ent.Client, error) {
-	/* тут используем cgf и формируем строку подключения */
+
 	connString := "host=localhost port=5432 user=postgres dbname=server_db password=postgres sslmode=disable"
 
 	db, err := sql.Open(dialect.Postgres, connString)
 	if err != nil {
-		return nil, fmt.Errorf("ошибка при подключении к БД: %w", err)
+		return nil, fmt.Errorf("ОШИБКА ПОДКЛЮЧЕНИЯ К БД: %w", err)
 	}
 
 	logLevel := trace_driver.Warn

@@ -7,6 +7,8 @@ import (
 	"go.uber.org/zap"
 	"hospital/internal/modules/config"
 	"hospital/internal/modules/db/ent"
+
+	_ "hospital/internal/modules/db/ent/runtime"
 )
 
 //go:generate go run -mod=mod entgo.io/ent/cmd/ent generate --target ./ent ./schema

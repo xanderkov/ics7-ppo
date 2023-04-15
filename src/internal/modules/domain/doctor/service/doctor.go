@@ -8,11 +8,11 @@ import (
 //go:generate mockgen -destination mock_test.go -package service . IDoctorRepo
 
 type IDoctorRepo interface {
-	GetById(ctx context.Context, id int32) (*dto.Doctor, error)
+	GetById(ctx context.Context, id int) (*dto.Doctor, error)
 	List(ctx context.Context) (dto.Doctors, error)
 	Create(ctx context.Context, dtm *dto.CreateDoctor) (*dto.Doctor, error)
-	Update(ctx context.Context, num int32, dtm *dto.UpdateDoctor) (*dto.Doctor, error)
-	Delete(ctx context.Context, num int32) error
+	Update(ctx context.Context, id int, dtm *dto.UpdateDoctor) (*dto.Doctor, error)
+	Delete(ctx context.Context, id int) error
 }
 
 type DoctorService struct {
@@ -25,7 +25,7 @@ func NewDoctorService(repo IDoctorRepo) *DoctorService {
 	}
 }
 
-func (r *DoctorService) GetById(ctx context.Context, id int32) (*dto.Doctor, error) {
+func (r *DoctorService) GetById(ctx context.Context, id int) (*dto.Doctor, error) {
 	return r.repo.GetById(ctx, id)
 }
 
@@ -37,10 +37,10 @@ func (r *DoctorService) Create(ctx context.Context, dtm *dto.CreateDoctor) (*dto
 	return r.repo.Create(ctx, dtm)
 }
 
-func (r *DoctorService) Update(ctx context.Context, id int32, dtm *dto.UpdateDoctor) (*dto.Doctor, error) {
+func (r *DoctorService) Update(ctx context.Context, id int, dtm *dto.UpdateDoctor) (*dto.Doctor, error) {
 	return r.repo.Update(ctx, id, dtm)
 }
 
-func (r *DoctorService) Delete(ctx context.Context, id int32) error {
+func (r *DoctorService) Delete(ctx context.Context, id int) error {
 	return r.repo.Delete(ctx, id)
 }
