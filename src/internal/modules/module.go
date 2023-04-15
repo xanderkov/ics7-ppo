@@ -4,11 +4,11 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
-	"hospital/src/internal/modules/app"
-	"hospital/src/internal/modules/config"
-	"hospital/src/internal/modules/db"
-	"hospital/src/internal/modules/domain"
-	"hospital/src/internal/modules/logger"
+	"hospital/internal/modules/app"
+	"hospital/internal/modules/config"
+	"hospital/internal/modules/db"
+	"hospital/internal/modules/domain"
+	"hospital/internal/modules/logger"
 )
 
 var (

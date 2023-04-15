@@ -2,9 +2,9 @@ package repo
 
 import (
 	"context"
-	"hospital/src/internal/modules/db"
-	"hospital/src/internal/modules/db/ent"
-	"hospital/src/internal/modules/domain/doctor/dto"
+	"hospital/internal/modules/db"
+	"hospital/internal/modules/db/ent"
+	"hospital/internal/modules/domain/doctor/dto"
 )
 
 type DoctorRepo struct {

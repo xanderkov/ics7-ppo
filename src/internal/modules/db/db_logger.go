@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"go.uber.org/zap"
-	"hospital/src/internal/modules/db/ent"
-	"hospital/src/internal/modules/db/trace_driver"
+	"hospital/internal/modules/db/ent"
+	"hospital/internal/modules/db/trace_driver"
 	"time"
 )
 

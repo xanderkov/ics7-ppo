@@ -1,25 +1,25 @@
 package dto
 
 type Room struct {
-	Num            int32
-	Floor          int32
-	NumberBeds     int32
+	Num            int
+	Floor          int
+	NumberBeds     int
 	TypeRoom       string
-	NumberPatients int32
+	NumberPatients int
 }
 
 type Rooms []*Room
 
 type CreateRoom struct {
-	Floor          int32
-	NumberBeds     int32
+	Floor          int
+	NumberBeds     int
 	TypeRoom       string
-	NumberPatients int32
+	NumberPatients int
 }
 
 type UpdateRoom struct {
-	Floor          *int32
-	NumberBeds     *int32
+	Floor          *int
+	NumberBeds     *int
 	TypeRoom       *string
-	NumberPatients int32
+	NumberPatients int
 }

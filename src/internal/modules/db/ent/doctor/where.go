@@ -3,7 +3,7 @@
 package doctor
 
 import (
-	"hospital/src/internal/modules/db/ent/predicate"
+	"hospital/internal/modules/db/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"

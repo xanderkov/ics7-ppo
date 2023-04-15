@@ -5,7 +5,7 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"hospital/src/internal/modules/app"
+	"hospital/internal/modules/app"
 )
 
 func NewLogger(app app.App) (*zap.Logger, zap.AtomicLevel, error) {

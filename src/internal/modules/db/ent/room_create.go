@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hospital/src/internal/modules/db/ent/patient"
-	"hospital/src/internal/modules/db/ent/room"
+	"hospital/internal/modules/db/ent/patient"
+	"hospital/internal/modules/db/ent/room"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"

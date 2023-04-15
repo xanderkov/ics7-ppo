@@ -6,10 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"go.uber.org/zap"
-	err_c "hospital/src/internal/models/errors"
-	"hospital/src/internal/modules/config"
-	"hospital/src/internal/modules/db/ent"
-	"hospital/src/internal/modules/db/trace_driver"
+	err_c "hospital/internal/models/errors"
+	"hospital/internal/modules/config"
+	"hospital/internal/modules/db/ent"
+	"hospital/internal/modules/db/trace_driver"
 	"time"
 )
 

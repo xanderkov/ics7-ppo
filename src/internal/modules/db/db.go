@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
-	"hospital/src/internal/modules/config"
-	"hospital/src/internal/modules/db/ent"
+	"hospital/internal/modules/config"
+	"hospital/internal/modules/db/ent"
 )
 
 //go:generate go run -mod=mod entgo.io/ent/cmd/ent generate --target ./ent ./schema

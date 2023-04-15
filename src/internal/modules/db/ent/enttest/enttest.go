@@ -4,11 +4,11 @@ package enttest
 
 import (
 	"context"
-	"hospital/src/internal/modules/db/ent"
+	"hospital/internal/modules/db/ent"
 	// required by schema hooks.
-	_ "hospital/src/internal/modules/db/ent/runtime"
+	_ "hospital/internal/modules/db/ent/runtime"
 
-	"hospital/src/internal/modules/db/ent/migrate"
+	"hospital/internal/modules/db/ent/migrate"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

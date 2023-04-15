@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"hospital/src/internal/modules/domain/room/dto"
+	"hospital/internal/modules/domain/room/dto"
 )
 
 //go:generate mockgen -destination mock_test.go -package service . IRoomRepo

@@ -2,7 +2,7 @@ package main
 
 import (
 	"go.uber.org/fx"
-	"hospital/src/internal/modules"
+	"hospital/internal/modules"
 )
 
 func main() {

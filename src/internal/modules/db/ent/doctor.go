@@ -4,7 +4,7 @@ package ent
 
 import (
 	"fmt"
-	"hospital/src/internal/modules/db/ent/doctor"
+	"hospital/internal/modules/db/ent/doctor"
 	"strings"
 
 	"entgo.io/ent"

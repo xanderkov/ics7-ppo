@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in hospital/src/internal/modules/db/ent/runtime.go
+// The schema-stitching logic is generated in hospital/internal/modules/db/ent/runtime.go
 
 const (
 	Version = "v0.12.0"                                         // Version of ent codegen.

@@ -2,20 +2,20 @@ package service
 
 import (
 	"context"
-	"hospital/src/internal/modules/domain/auth/dto"
-	doctor_dto "hospital/src/internal/modules/domain/doctor/dto"
+	"hospital/internal/modules/domain/auth/dto"
+	doctor_dto "hospital/internal/modules/domain/doctor/dto"
 )
 
 //go:generate mockgen -destination mock_test.go -package service . IUserRepo
 
 type IUserRepo interface {
-	GetByTokenId(ctx context.Context, tokenId int32) (*doctor_dto.Doctor, error)
+	GetByTokenId(ctx context.Context, tokenId int) (*doctor_dto.Doctor, error)
 	Create(ctx context.Context, dtm *doctor_dto.CreateDoctor) (*doctor_dto.Doctor, error)
 }
 
 type AuthService struct {
 	repo    IUserRepo
-	tokenId int32
+	tokenId int
 }
 
 func (r *AuthService) SignUp(ctx context.Context, newUser *dto.NewUser) (*doctor_dto.Doctor, error) {

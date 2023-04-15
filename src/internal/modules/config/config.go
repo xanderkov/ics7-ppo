@@ -2,7 +2,7 @@ package config
 
 import (
 	"go.uber.org/zap"
-	"hospital/src/internal/modules/app"
+	"hospital/internal/modules/app"
 )
 
 type Config struct {

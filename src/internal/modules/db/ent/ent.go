@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hospital/src/internal/modules/db/ent/doctor"
-	"hospital/src/internal/modules/db/ent/patient"
-	"hospital/src/internal/modules/db/ent/room"
+	"hospital/internal/modules/db/ent/doctor"
+	"hospital/internal/modules/db/ent/patient"
+	"hospital/internal/modules/db/ent/room"
 	"reflect"
 	"sync"
 

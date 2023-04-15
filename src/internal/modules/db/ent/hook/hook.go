@@ -5,7 +5,7 @@ package hook
 import (
 	"context"
 	"fmt"
-	"hospital/src/internal/modules/db/ent"
+	"hospital/internal/modules/db/ent"
 )
 
 // The DoctorFunc type is an adapter to allow the use of ordinary

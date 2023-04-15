@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"log"
 
-	"hospital/src/internal/modules/db/ent/migrate"
+	"hospital/internal/modules/db/ent/migrate"
 
-	"hospital/src/internal/modules/db/ent/doctor"
-	"hospital/src/internal/modules/db/ent/patient"
-	"hospital/src/internal/modules/db/ent/room"
+	"hospital/internal/modules/db/ent/doctor"
+	"hospital/internal/modules/db/ent/patient"
+	"hospital/internal/modules/db/ent/room"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"

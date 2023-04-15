@@ -2,8 +2,8 @@ package domain
 
 import (
 	"go.uber.org/fx"
-	"hospital/src/internal/modules/domain/doctor/repo"
-	"hospital/src/internal/modules/domain/doctor/service"
+	"hospital/internal/modules/domain/doctor/repo"
+	"hospital/internal/modules/domain/doctor/service"
 )
 
 var (

@@ -6,9 +6,9 @@ import (
 	"context"
 	"database/sql/driver"
 	"fmt"
-	"hospital/src/internal/modules/db/ent/doctor"
-	"hospital/src/internal/modules/db/ent/patient"
-	"hospital/src/internal/modules/db/ent/predicate"
+	"hospital/internal/modules/db/ent/doctor"
+	"hospital/internal/modules/db/ent/patient"
+	"hospital/internal/modules/db/ent/predicate"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
