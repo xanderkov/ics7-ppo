@@ -7,7 +7,7 @@ func (e Const) Error() string {
 }
 
 const (
-	ErrIdValidate   = Const("неверно указан Id объекта")
+	ErrIdValidate = Const("неверно указан Id объекта")
 
 	ErrInvalidToken = Const("некорректный токен")
 

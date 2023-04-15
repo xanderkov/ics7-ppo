@@ -3,8 +3,10 @@ package db
 import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"errors"
 	"fmt"
 	"go.uber.org/zap"
+	err_c "hospital/src/internal/models/errors"
 	"hospital/src/internal/modules/config"
 	"hospital/src/internal/modules/db/ent"
 	"hospital/src/internal/modules/db/trace_driver"
@@ -38,4 +40,12 @@ func connectDB(cfg config.Config, logger *zap.Logger) (*ent.Client, error) {
 	client := ent.NewClient(opts...)
 
 	return client, nil
+}
+
+func WrapError(err error) error {
+	if errors.Is(err, &ent.NotFoundError{}) {
+		return err_c.ErrDatabaseRecordNotFound
+	}
+
+	return err
 }

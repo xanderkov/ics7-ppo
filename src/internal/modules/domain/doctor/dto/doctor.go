@@ -1,7 +1,7 @@
 package dto
 
 type Doctor struct {
-	Id         int32
+	Id         int
 	TokenId    string
 	Surname    string
 	Speciality string
@@ -18,7 +18,7 @@ type CreateDoctor struct {
 }
 
 type UpdateDoctor struct {
-	Surname    *string
-	Speciality *string
-	Role       *string
+	Surname    string
+	Speciality string
+	Role       string
 }
