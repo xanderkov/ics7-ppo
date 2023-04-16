@@ -2,8 +2,8 @@ package patient
 
 import (
 	"go.uber.org/fx"
-	"hospital/internal/modules/domain/room/repo"
-	"hospital/internal/modules/domain/room/service"
+	"hospital/internal/modules/domain/patient/repo"
+	"hospital/internal/modules/domain/patient/service"
 )
 
 var (
@@ -13,8 +13,8 @@ var (
 
 		fx.Provide(
 			fx.Annotate(
-				func(r *repo.RoomRepo) *repo.RoomRepo { return r },
-				fx.As(new(service.IRoomRepo)),
+				func(r *repo.PatientRepo) *repo.PatientRepo { return r },
+				fx.As(new(service.IPatientRepo)),
 			),
 		),
 	)

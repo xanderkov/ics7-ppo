@@ -2,6 +2,7 @@ package integrational
 
 import (
 	"context"
+	auth_serv "hospital/internal/modules/domain/auth/service"
 
 	"hospital/internal/modules/db/ent"
 	doctor_servis "hospital/internal/modules/domain/doctor/service"
@@ -26,7 +27,7 @@ func TestServices(t *testing.T) {
 func execTests(
 	t *testing.T,
 	doctorService *doctor_servis.DoctorService,
-	// authService *auth_serv.AuthService,
+	authService *auth_serv.AuthService,
 	patientService *patient_servis.PatientService,
 	roomService *room_servis.RoomService,
 
@@ -37,7 +38,9 @@ func execTests(
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
-				// doctorServiceTest(t, doctorService, authService, client)
+				doctorServiceTest(t, doctorService, authService, client)
+				patientServiceTest(t, patientService, authService, client)
+				roomServiceTest(t, roomService, authService, client)
 
 				_ = shutdowner.Shutdown()
 			}()
