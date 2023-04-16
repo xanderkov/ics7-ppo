@@ -40,14 +40,14 @@ func (pc *PatientCreate) SetPatronymic(s string) *PatientCreate {
 }
 
 // SetHeight sets the "height" field.
-func (pc *PatientCreate) SetHeight(i int32) *PatientCreate {
+func (pc *PatientCreate) SetHeight(i int) *PatientCreate {
 	pc.mutation.SetHeight(i)
 	return pc
 }
 
 // SetWeight sets the "weight" field.
-func (pc *PatientCreate) SetWeight(i int32) *PatientCreate {
-	pc.mutation.SetWeight(i)
+func (pc *PatientCreate) SetWeight(f float64) *PatientCreate {
+	pc.mutation.SetWeight(f)
 	return pc
 }
 
@@ -58,20 +58,20 @@ func (pc *PatientCreate) SetRoomNumber(i int) *PatientCreate {
 }
 
 // SetDegreeOfDanger sets the "degreeOfDanger" field.
-func (pc *PatientCreate) SetDegreeOfDanger(i int32) *PatientCreate {
+func (pc *PatientCreate) SetDegreeOfDanger(i int) *PatientCreate {
 	pc.mutation.SetDegreeOfDanger(i)
 	return pc
 }
 
-// SetRoomID sets the "room" edge to the Room entity by ID.
-func (pc *PatientCreate) SetRoomID(id int) *PatientCreate {
-	pc.mutation.SetRoomID(id)
+// SetRepoID sets the "repo" edge to the Room entity by ID.
+func (pc *PatientCreate) SetRepoID(id int) *PatientCreate {
+	pc.mutation.SetRepoID(id)
 	return pc
 }
 
-// SetRoom sets the "room" edge to the Room entity.
-func (pc *PatientCreate) SetRoom(r *Room) *PatientCreate {
-	return pc.SetRoomID(r.ID)
+// SetRepo sets the "repo" edge to the Room entity.
+func (pc *PatientCreate) SetRepo(r *Room) *PatientCreate {
+	return pc.SetRepoID(r.ID)
 }
 
 // AddDoctorIDs adds the "doctor" edge to the Doctor entity by IDs.
@@ -144,8 +144,8 @@ func (pc *PatientCreate) check() error {
 	if _, ok := pc.mutation.DegreeOfDanger(); !ok {
 		return &ValidationError{Name: "degreeOfDanger", err: errors.New(`ent: missing required field "Patient.degreeOfDanger"`)}
 	}
-	if _, ok := pc.mutation.RoomID(); !ok {
-		return &ValidationError{Name: "room", err: errors.New(`ent: missing required edge "Patient.room"`)}
+	if _, ok := pc.mutation.RepoID(); !ok {
+		return &ValidationError{Name: "repo", err: errors.New(`ent: missing required edge "Patient.repo"`)}
 	}
 	return nil
 }
@@ -186,23 +186,23 @@ func (pc *PatientCreate) createSpec() (*Patient, *sqlgraph.CreateSpec) {
 		_node.Patronymic = value
 	}
 	if value, ok := pc.mutation.Height(); ok {
-		_spec.SetField(patient.FieldHeight, field.TypeInt32, value)
+		_spec.SetField(patient.FieldHeight, field.TypeInt, value)
 		_node.Height = value
 	}
 	if value, ok := pc.mutation.Weight(); ok {
-		_spec.SetField(patient.FieldWeight, field.TypeInt32, value)
+		_spec.SetField(patient.FieldWeight, field.TypeFloat64, value)
 		_node.Weight = value
 	}
 	if value, ok := pc.mutation.DegreeOfDanger(); ok {
-		_spec.SetField(patient.FieldDegreeOfDanger, field.TypeInt32, value)
+		_spec.SetField(patient.FieldDegreeOfDanger, field.TypeInt, value)
 		_node.DegreeOfDanger = value
 	}
-	if nodes := pc.mutation.RoomIDs(); len(nodes) > 0 {
+	if nodes := pc.mutation.RepoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   patient.RoomTable,
-			Columns: []string{patient.RoomColumn},
+			Table:   patient.RepoTable,
+			Columns: []string{patient.RepoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeInt),

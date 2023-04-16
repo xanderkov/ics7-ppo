@@ -26,19 +26,19 @@ const (
 	FieldRoomNumber = "room_number"
 	// FieldDegreeOfDanger holds the string denoting the degreeofdanger field in the database.
 	FieldDegreeOfDanger = "degree_of_danger"
-	// EdgeRoom holds the string denoting the room edge name in mutations.
-	EdgeRoom = "room"
+	// EdgeRepo holds the string denoting the repo edge name in mutations.
+	EdgeRepo = "repo"
 	// EdgeDoctor holds the string denoting the doctor edge name in mutations.
 	EdgeDoctor = "doctor"
 	// Table holds the table name of the patient in the database.
 	Table = "patients"
-	// RoomTable is the table that holds the room relation/edge.
-	RoomTable = "patients"
-	// RoomInverseTable is the table name for the Room entity.
+	// RepoTable is the table that holds the repo relation/edge.
+	RepoTable = "patients"
+	// RepoInverseTable is the table name for the Room entity.
 	// It exists in this package in order to avoid circular dependency with the "room" package.
-	RoomInverseTable = "rooms"
-	// RoomColumn is the table column denoting the room relation/edge.
-	RoomColumn = "room_number"
+	RepoInverseTable = "rooms"
+	// RepoColumn is the table column denoting the repo relation/edge.
+	RepoColumn = "room_number"
 	// DoctorTable is the table that holds the doctor relation/edge. The primary key declared below.
 	DoctorTable = "doctor_patient"
 	// DoctorInverseTable is the table name for the Doctor entity.
@@ -117,10 +117,10 @@ func ByDegreeOfDanger(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldDegreeOfDanger, opts...).ToFunc()
 }
 
-// ByRoomField orders the results by room field.
-func ByRoomField(field string, opts ...sql.OrderTermOption) Order {
+// ByRepoField orders the results by repo field.
+func ByRepoField(field string, opts ...sql.OrderTermOption) Order {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newRoomStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newRepoStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -137,11 +137,11 @@ func ByDoctor(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
 		sqlgraph.OrderByNeighborTerms(s, newDoctorStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newRoomStep() *sqlgraph.Step {
+func newRepoStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(RoomInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, RoomTable, RoomColumn),
+		sqlgraph.To(RepoInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, RepoTable, RepoColumn),
 	)
 }
 func newDoctorStep() *sqlgraph.Step {

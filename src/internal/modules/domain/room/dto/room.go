@@ -18,8 +18,8 @@ type CreateRoom struct {
 }
 
 type UpdateRoom struct {
-	Floor          *int
-	NumberBeds     *int
-	TypeRoom       *string
+	Floor          int
+	NumberBeds     int
+	TypeRoom       string
 	NumberPatients int
 }

@@ -28,9 +28,9 @@ var (
 		{Name: "surname", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "patronymic", Type: field.TypeString},
-		{Name: "height", Type: field.TypeInt32},
-		{Name: "weight", Type: field.TypeInt32},
-		{Name: "degree_of_danger", Type: field.TypeInt32},
+		{Name: "height", Type: field.TypeInt},
+		{Name: "weight", Type: field.TypeFloat64},
+		{Name: "degree_of_danger", Type: field.TypeInt},
 		{Name: "room_number", Type: field.TypeInt},
 	}
 	// PatientsTable holds the schema information for the "patients" table.
@@ -50,10 +50,10 @@ var (
 	// RoomsColumns holds the columns for the "rooms" table.
 	RoomsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "number", Type: field.TypeInt32, Unique: true},
-		{Name: "floor", Type: field.TypeInt32},
-		{Name: "number_beds", Type: field.TypeInt32},
-		{Name: "number_patients", Type: field.TypeInt32},
+		{Name: "number", Type: field.TypeInt, Unique: true},
+		{Name: "floor", Type: field.TypeInt},
+		{Name: "number_beds", Type: field.TypeInt},
+		{Name: "number_patients", Type: field.TypeInt},
 		{Name: "type_room", Type: field.TypeString},
 	}
 	// RoomsTable holds the schema information for the "rooms" table.

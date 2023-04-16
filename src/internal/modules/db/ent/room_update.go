@@ -29,53 +29,53 @@ func (ru *RoomUpdate) Where(ps ...predicate.Room) *RoomUpdate {
 }
 
 // SetNumber sets the "number" field.
-func (ru *RoomUpdate) SetNumber(i int32) *RoomUpdate {
+func (ru *RoomUpdate) SetNumber(i int) *RoomUpdate {
 	ru.mutation.ResetNumber()
 	ru.mutation.SetNumber(i)
 	return ru
 }
 
 // AddNumber adds i to the "number" field.
-func (ru *RoomUpdate) AddNumber(i int32) *RoomUpdate {
+func (ru *RoomUpdate) AddNumber(i int) *RoomUpdate {
 	ru.mutation.AddNumber(i)
 	return ru
 }
 
 // SetFloor sets the "floor" field.
-func (ru *RoomUpdate) SetFloor(i int32) *RoomUpdate {
+func (ru *RoomUpdate) SetFloor(i int) *RoomUpdate {
 	ru.mutation.ResetFloor()
 	ru.mutation.SetFloor(i)
 	return ru
 }
 
 // AddFloor adds i to the "floor" field.
-func (ru *RoomUpdate) AddFloor(i int32) *RoomUpdate {
+func (ru *RoomUpdate) AddFloor(i int) *RoomUpdate {
 	ru.mutation.AddFloor(i)
 	return ru
 }
 
 // SetNumberBeds sets the "numberBeds" field.
-func (ru *RoomUpdate) SetNumberBeds(i int32) *RoomUpdate {
+func (ru *RoomUpdate) SetNumberBeds(i int) *RoomUpdate {
 	ru.mutation.ResetNumberBeds()
 	ru.mutation.SetNumberBeds(i)
 	return ru
 }
 
 // AddNumberBeds adds i to the "numberBeds" field.
-func (ru *RoomUpdate) AddNumberBeds(i int32) *RoomUpdate {
+func (ru *RoomUpdate) AddNumberBeds(i int) *RoomUpdate {
 	ru.mutation.AddNumberBeds(i)
 	return ru
 }
 
 // SetNumberPatients sets the "numberPatients" field.
-func (ru *RoomUpdate) SetNumberPatients(i int32) *RoomUpdate {
+func (ru *RoomUpdate) SetNumberPatients(i int) *RoomUpdate {
 	ru.mutation.ResetNumberPatients()
 	ru.mutation.SetNumberPatients(i)
 	return ru
 }
 
 // AddNumberPatients adds i to the "numberPatients" field.
-func (ru *RoomUpdate) AddNumberPatients(i int32) *RoomUpdate {
+func (ru *RoomUpdate) AddNumberPatients(i int) *RoomUpdate {
 	ru.mutation.AddNumberPatients(i)
 	return ru
 }
@@ -164,28 +164,28 @@ func (ru *RoomUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := ru.mutation.Number(); ok {
-		_spec.SetField(room.FieldNumber, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumber, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.AddedNumber(); ok {
-		_spec.AddField(room.FieldNumber, field.TypeInt32, value)
+		_spec.AddField(room.FieldNumber, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.Floor(); ok {
-		_spec.SetField(room.FieldFloor, field.TypeInt32, value)
+		_spec.SetField(room.FieldFloor, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.AddedFloor(); ok {
-		_spec.AddField(room.FieldFloor, field.TypeInt32, value)
+		_spec.AddField(room.FieldFloor, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.NumberBeds(); ok {
-		_spec.SetField(room.FieldNumberBeds, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumberBeds, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.AddedNumberBeds(); ok {
-		_spec.AddField(room.FieldNumberBeds, field.TypeInt32, value)
+		_spec.AddField(room.FieldNumberBeds, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.NumberPatients(); ok {
-		_spec.SetField(room.FieldNumberPatients, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumberPatients, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.AddedNumberPatients(); ok {
-		_spec.AddField(room.FieldNumberPatients, field.TypeInt32, value)
+		_spec.AddField(room.FieldNumberPatients, field.TypeInt, value)
 	}
 	if value, ok := ru.mutation.TypeRoom(); ok {
 		_spec.SetField(room.FieldTypeRoom, field.TypeString, value)
@@ -256,53 +256,53 @@ type RoomUpdateOne struct {
 }
 
 // SetNumber sets the "number" field.
-func (ruo *RoomUpdateOne) SetNumber(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) SetNumber(i int) *RoomUpdateOne {
 	ruo.mutation.ResetNumber()
 	ruo.mutation.SetNumber(i)
 	return ruo
 }
 
 // AddNumber adds i to the "number" field.
-func (ruo *RoomUpdateOne) AddNumber(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) AddNumber(i int) *RoomUpdateOne {
 	ruo.mutation.AddNumber(i)
 	return ruo
 }
 
 // SetFloor sets the "floor" field.
-func (ruo *RoomUpdateOne) SetFloor(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) SetFloor(i int) *RoomUpdateOne {
 	ruo.mutation.ResetFloor()
 	ruo.mutation.SetFloor(i)
 	return ruo
 }
 
 // AddFloor adds i to the "floor" field.
-func (ruo *RoomUpdateOne) AddFloor(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) AddFloor(i int) *RoomUpdateOne {
 	ruo.mutation.AddFloor(i)
 	return ruo
 }
 
 // SetNumberBeds sets the "numberBeds" field.
-func (ruo *RoomUpdateOne) SetNumberBeds(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) SetNumberBeds(i int) *RoomUpdateOne {
 	ruo.mutation.ResetNumberBeds()
 	ruo.mutation.SetNumberBeds(i)
 	return ruo
 }
 
 // AddNumberBeds adds i to the "numberBeds" field.
-func (ruo *RoomUpdateOne) AddNumberBeds(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) AddNumberBeds(i int) *RoomUpdateOne {
 	ruo.mutation.AddNumberBeds(i)
 	return ruo
 }
 
 // SetNumberPatients sets the "numberPatients" field.
-func (ruo *RoomUpdateOne) SetNumberPatients(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) SetNumberPatients(i int) *RoomUpdateOne {
 	ruo.mutation.ResetNumberPatients()
 	ruo.mutation.SetNumberPatients(i)
 	return ruo
 }
 
 // AddNumberPatients adds i to the "numberPatients" field.
-func (ruo *RoomUpdateOne) AddNumberPatients(i int32) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) AddNumberPatients(i int) *RoomUpdateOne {
 	ruo.mutation.AddNumberPatients(i)
 	return ruo
 }
@@ -421,28 +421,28 @@ func (ruo *RoomUpdateOne) sqlSave(ctx context.Context) (_node *Room, err error) 
 		}
 	}
 	if value, ok := ruo.mutation.Number(); ok {
-		_spec.SetField(room.FieldNumber, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumber, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.AddedNumber(); ok {
-		_spec.AddField(room.FieldNumber, field.TypeInt32, value)
+		_spec.AddField(room.FieldNumber, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.Floor(); ok {
-		_spec.SetField(room.FieldFloor, field.TypeInt32, value)
+		_spec.SetField(room.FieldFloor, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.AddedFloor(); ok {
-		_spec.AddField(room.FieldFloor, field.TypeInt32, value)
+		_spec.AddField(room.FieldFloor, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.NumberBeds(); ok {
-		_spec.SetField(room.FieldNumberBeds, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumberBeds, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.AddedNumberBeds(); ok {
-		_spec.AddField(room.FieldNumberBeds, field.TypeInt32, value)
+		_spec.AddField(room.FieldNumberBeds, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.NumberPatients(); ok {
-		_spec.SetField(room.FieldNumberPatients, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumberPatients, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.AddedNumberPatients(); ok {
-		_spec.AddField(room.FieldNumberPatients, field.TypeInt32, value)
+		_spec.AddField(room.FieldNumberPatients, field.TypeInt, value)
 	}
 	if value, ok := ruo.mutation.TypeRoom(); ok {
 		_spec.SetField(room.FieldTypeRoom, field.TypeString, value)

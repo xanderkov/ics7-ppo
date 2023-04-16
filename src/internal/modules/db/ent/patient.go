@@ -24,13 +24,13 @@ type Patient struct {
 	// Patronymic holds the value of the "patronymic" field.
 	Patronymic string `json:"patronymic,omitempty"`
 	// Height holds the value of the "height" field.
-	Height int32 `json:"height,omitempty"`
+	Height int `json:"height,omitempty"`
 	// Weight holds the value of the "weight" field.
-	Weight int32 `json:"weight,omitempty"`
+	Weight float64 `json:"weight,omitempty"`
 	// RoomNumber holds the value of the "roomNumber" field.
 	RoomNumber int `json:"roomNumber,omitempty"`
 	// DegreeOfDanger holds the value of the "degreeOfDanger" field.
-	DegreeOfDanger int32 `json:"degreeOfDanger,omitempty"`
+	DegreeOfDanger int `json:"degreeOfDanger,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PatientQuery when eager-loading is set.
 	Edges        PatientEdges `json:"edges"`
@@ -39,8 +39,8 @@ type Patient struct {
 
 // PatientEdges holds the relations/edges for other nodes in the graph.
 type PatientEdges struct {
-	// Room holds the value of the room edge.
-	Room *Room `json:"room,omitempty"`
+	// Repo holds the value of the repo edge.
+	Repo *Room `json:"repo,omitempty"`
 	// Doctor holds the value of the doctor edge.
 	Doctor []*Doctor `json:"doctor,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -48,17 +48,17 @@ type PatientEdges struct {
 	loadedTypes [2]bool
 }
 
-// RoomOrErr returns the Room value or an error if the edge
+// RepoOrErr returns the Repo value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e PatientEdges) RoomOrErr() (*Room, error) {
+func (e PatientEdges) RepoOrErr() (*Room, error) {
 	if e.loadedTypes[0] {
-		if e.Room == nil {
+		if e.Repo == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: room.Label}
 		}
-		return e.Room, nil
+		return e.Repo, nil
 	}
-	return nil, &NotLoadedError{edge: "room"}
+	return nil, &NotLoadedError{edge: "repo"}
 }
 
 // DoctorOrErr returns the Doctor value or an error if the edge
@@ -75,7 +75,9 @@ func (*Patient) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case patient.FieldID, patient.FieldHeight, patient.FieldWeight, patient.FieldRoomNumber, patient.FieldDegreeOfDanger:
+		case patient.FieldWeight:
+			values[i] = new(sql.NullFloat64)
+		case patient.FieldID, patient.FieldHeight, patient.FieldRoomNumber, patient.FieldDegreeOfDanger:
 			values[i] = new(sql.NullInt64)
 		case patient.FieldSurname, patient.FieldName, patient.FieldPatronymic:
 			values[i] = new(sql.NullString)
@@ -122,13 +124,13 @@ func (pa *Patient) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field height", values[i])
 			} else if value.Valid {
-				pa.Height = int32(value.Int64)
+				pa.Height = int(value.Int64)
 			}
 		case patient.FieldWeight:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field weight", values[i])
 			} else if value.Valid {
-				pa.Weight = int32(value.Int64)
+				pa.Weight = value.Float64
 			}
 		case patient.FieldRoomNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -140,7 +142,7 @@ func (pa *Patient) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field degreeOfDanger", values[i])
 			} else if value.Valid {
-				pa.DegreeOfDanger = int32(value.Int64)
+				pa.DegreeOfDanger = int(value.Int64)
 			}
 		default:
 			pa.selectValues.Set(columns[i], values[i])
@@ -155,9 +157,9 @@ func (pa *Patient) Value(name string) (ent.Value, error) {
 	return pa.selectValues.Get(name)
 }
 
-// QueryRoom queries the "room" edge of the Patient entity.
-func (pa *Patient) QueryRoom() *RoomQuery {
-	return NewPatientClient(pa.config).QueryRoom(pa)
+// QueryRepo queries the "repo" edge of the Patient entity.
+func (pa *Patient) QueryRepo() *RoomQuery {
+	return NewPatientClient(pa.config).QueryRepo(pa)
 }
 
 // QueryDoctor queries the "doctor" edge of the Patient entity.

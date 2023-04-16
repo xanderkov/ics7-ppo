@@ -51,7 +51,7 @@ func (mr *MockIDoctorRepoMockRecorder) Create(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // GetByTokenId mocks base method.
-func (m *MockIDoctorRepo) GetByTokenId(arg0 context.Context, arg1 int) (*dto.Doctor, error) {
+func (m *MockIDoctorRepo) GetByTokenId(arg0 context.Context, arg1 string) (*dto.Doctor, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByTokenId", arg0, arg1)
 	ret0, _ := ret[0].(*dto.Doctor)

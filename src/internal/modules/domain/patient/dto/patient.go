@@ -6,7 +6,7 @@ type Patient struct {
 	Name           string
 	Patronymic     string
 	Height         int
-	Weight         float32
+	Weight         float64
 	RoomNumber     int
 	DegreeOfDanger int
 }
@@ -18,7 +18,7 @@ type CreatePatient struct {
 	Name           string
 	Patronymic     string
 	Height         int
-	Weight         float32
+	Weight         float64
 	RoomNumber     int
 	DegreeOfDanger int
 }
@@ -28,7 +28,7 @@ type UpdatePatient struct {
 	Name           string
 	Patronymic     string
 	Height         int
-	Weight         float32
+	Weight         float64
 	RoomNumber     int
 	DegreeOfDanger int
 }

@@ -17,13 +17,13 @@ type Room struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// Number holds the value of the "number" field.
-	Number int32 `json:"number,omitempty"`
+	Number int `json:"number,omitempty"`
 	// Floor holds the value of the "floor" field.
-	Floor int32 `json:"floor,omitempty"`
+	Floor int `json:"floor,omitempty"`
 	// NumberBeds holds the value of the "numberBeds" field.
-	NumberBeds int32 `json:"numberBeds,omitempty"`
+	NumberBeds int `json:"numberBeds,omitempty"`
 	// NumberPatients holds the value of the "numberPatients" field.
-	NumberPatients int32 `json:"numberPatients,omitempty"`
+	NumberPatients int `json:"numberPatients,omitempty"`
 	// TypeRoom holds the value of the "typeRoom" field.
 	TypeRoom string `json:"typeRoom,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -84,25 +84,25 @@ func (r *Room) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field number", values[i])
 			} else if value.Valid {
-				r.Number = int32(value.Int64)
+				r.Number = int(value.Int64)
 			}
 		case room.FieldFloor:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field floor", values[i])
 			} else if value.Valid {
-				r.Floor = int32(value.Int64)
+				r.Floor = int(value.Int64)
 			}
 		case room.FieldNumberBeds:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field numberBeds", values[i])
 			} else if value.Valid {
-				r.NumberBeds = int32(value.Int64)
+				r.NumberBeds = int(value.Int64)
 			}
 		case room.FieldNumberPatients:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field numberPatients", values[i])
 			} else if value.Valid {
-				r.NumberPatients = int32(value.Int64)
+				r.NumberPatients = int(value.Int64)
 			}
 		case room.FieldTypeRoom:
 			if value, ok := values[i].(*sql.NullString); !ok {

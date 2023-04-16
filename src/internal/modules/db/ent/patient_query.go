@@ -24,7 +24,7 @@ type PatientQuery struct {
 	order      []patient.Order
 	inters     []Interceptor
 	predicates []predicate.Patient
-	withRoom   *RoomQuery
+	withRepo   *RoomQuery
 	withDoctor *DoctorQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -62,8 +62,8 @@ func (pq *PatientQuery) Order(o ...patient.Order) *PatientQuery {
 	return pq
 }
 
-// QueryRoom chains the current query on the "room" edge.
-func (pq *PatientQuery) QueryRoom() *RoomQuery {
+// QueryRepo chains the current query on the "repo" edge.
+func (pq *PatientQuery) QueryRepo() *RoomQuery {
 	query := (&RoomClient{config: pq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := pq.prepareQuery(ctx); err != nil {
@@ -76,7 +76,7 @@ func (pq *PatientQuery) QueryRoom() *RoomQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(patient.Table, patient.FieldID, selector),
 			sqlgraph.To(room.Table, room.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, patient.RoomTable, patient.RoomColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, patient.RepoTable, patient.RepoColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
@@ -298,7 +298,7 @@ func (pq *PatientQuery) Clone() *PatientQuery {
 		order:      append([]patient.Order{}, pq.order...),
 		inters:     append([]Interceptor{}, pq.inters...),
 		predicates: append([]predicate.Patient{}, pq.predicates...),
-		withRoom:   pq.withRoom.Clone(),
+		withRepo:   pq.withRepo.Clone(),
 		withDoctor: pq.withDoctor.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
@@ -306,14 +306,14 @@ func (pq *PatientQuery) Clone() *PatientQuery {
 	}
 }
 
-// WithRoom tells the query-builder to eager-load the nodes that are connected to
-// the "room" edge. The optional arguments are used to configure the query builder of the edge.
-func (pq *PatientQuery) WithRoom(opts ...func(*RoomQuery)) *PatientQuery {
+// WithRepo tells the query-builder to eager-load the nodes that are connected to
+// the "repo" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PatientQuery) WithRepo(opts ...func(*RoomQuery)) *PatientQuery {
 	query := (&RoomClient{config: pq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	pq.withRoom = query
+	pq.withRepo = query
 	return pq
 }
 
@@ -407,7 +407,7 @@ func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pati
 		nodes       = []*Patient{}
 		_spec       = pq.querySpec()
 		loadedTypes = [2]bool{
-			pq.withRoom != nil,
+			pq.withRepo != nil,
 			pq.withDoctor != nil,
 		}
 	)
@@ -429,9 +429,9 @@ func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pati
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := pq.withRoom; query != nil {
-		if err := pq.loadRoom(ctx, query, nodes, nil,
-			func(n *Patient, e *Room) { n.Edges.Room = e }); err != nil {
+	if query := pq.withRepo; query != nil {
+		if err := pq.loadRepo(ctx, query, nodes, nil,
+			func(n *Patient, e *Room) { n.Edges.Repo = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -445,7 +445,7 @@ func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pati
 	return nodes, nil
 }
 
-func (pq *PatientQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes []*Patient, init func(*Patient), assign func(*Patient, *Room)) error {
+func (pq *PatientQuery) loadRepo(ctx context.Context, query *RoomQuery, nodes []*Patient, init func(*Patient), assign func(*Patient, *Room)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Patient)
 	for i := range nodes {
@@ -561,7 +561,7 @@ func (pq *PatientQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if pq.withRoom != nil {
+		if pq.withRepo != nil {
 			_spec.Node.AddColumnOnce(patient.FieldRoomNumber)
 		}
 	}

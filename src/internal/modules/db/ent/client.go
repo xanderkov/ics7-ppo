@@ -436,15 +436,15 @@ func (c *PatientClient) GetX(ctx context.Context, id int) *Patient {
 	return obj
 }
 
-// QueryRoom queries the room edge of a Patient.
-func (c *PatientClient) QueryRoom(pa *Patient) *RoomQuery {
+// QueryRepo queries the repo edge of a Patient.
+func (c *PatientClient) QueryRepo(pa *Patient) *RoomQuery {
 	query := (&RoomClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := pa.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(patient.Table, patient.FieldID, id),
 			sqlgraph.To(room.Table, room.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, patient.RoomTable, patient.RoomColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, patient.RepoTable, patient.RepoColumn),
 		)
 		fromV = sqlgraph.Neighbors(pa.driver.Dialect(), step)
 		return fromV, nil

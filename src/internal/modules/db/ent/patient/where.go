@@ -70,12 +70,12 @@ func Patronymic(v string) predicate.Patient {
 }
 
 // Height applies equality check predicate on the "height" field. It's identical to HeightEQ.
-func Height(v int32) predicate.Patient {
+func Height(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldEQ(FieldHeight, v))
 }
 
 // Weight applies equality check predicate on the "weight" field. It's identical to WeightEQ.
-func Weight(v int32) predicate.Patient {
+func Weight(v float64) predicate.Patient {
 	return predicate.Patient(sql.FieldEQ(FieldWeight, v))
 }
 
@@ -85,7 +85,7 @@ func RoomNumber(v int) predicate.Patient {
 }
 
 // DegreeOfDanger applies equality check predicate on the "degreeOfDanger" field. It's identical to DegreeOfDangerEQ.
-func DegreeOfDanger(v int32) predicate.Patient {
+func DegreeOfDanger(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldEQ(FieldDegreeOfDanger, v))
 }
 
@@ -285,82 +285,82 @@ func PatronymicContainsFold(v string) predicate.Patient {
 }
 
 // HeightEQ applies the EQ predicate on the "height" field.
-func HeightEQ(v int32) predicate.Patient {
+func HeightEQ(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldEQ(FieldHeight, v))
 }
 
 // HeightNEQ applies the NEQ predicate on the "height" field.
-func HeightNEQ(v int32) predicate.Patient {
+func HeightNEQ(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldNEQ(FieldHeight, v))
 }
 
 // HeightIn applies the In predicate on the "height" field.
-func HeightIn(vs ...int32) predicate.Patient {
+func HeightIn(vs ...int) predicate.Patient {
 	return predicate.Patient(sql.FieldIn(FieldHeight, vs...))
 }
 
 // HeightNotIn applies the NotIn predicate on the "height" field.
-func HeightNotIn(vs ...int32) predicate.Patient {
+func HeightNotIn(vs ...int) predicate.Patient {
 	return predicate.Patient(sql.FieldNotIn(FieldHeight, vs...))
 }
 
 // HeightGT applies the GT predicate on the "height" field.
-func HeightGT(v int32) predicate.Patient {
+func HeightGT(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldGT(FieldHeight, v))
 }
 
 // HeightGTE applies the GTE predicate on the "height" field.
-func HeightGTE(v int32) predicate.Patient {
+func HeightGTE(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldGTE(FieldHeight, v))
 }
 
 // HeightLT applies the LT predicate on the "height" field.
-func HeightLT(v int32) predicate.Patient {
+func HeightLT(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldLT(FieldHeight, v))
 }
 
 // HeightLTE applies the LTE predicate on the "height" field.
-func HeightLTE(v int32) predicate.Patient {
+func HeightLTE(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldLTE(FieldHeight, v))
 }
 
 // WeightEQ applies the EQ predicate on the "weight" field.
-func WeightEQ(v int32) predicate.Patient {
+func WeightEQ(v float64) predicate.Patient {
 	return predicate.Patient(sql.FieldEQ(FieldWeight, v))
 }
 
 // WeightNEQ applies the NEQ predicate on the "weight" field.
-func WeightNEQ(v int32) predicate.Patient {
+func WeightNEQ(v float64) predicate.Patient {
 	return predicate.Patient(sql.FieldNEQ(FieldWeight, v))
 }
 
 // WeightIn applies the In predicate on the "weight" field.
-func WeightIn(vs ...int32) predicate.Patient {
+func WeightIn(vs ...float64) predicate.Patient {
 	return predicate.Patient(sql.FieldIn(FieldWeight, vs...))
 }
 
 // WeightNotIn applies the NotIn predicate on the "weight" field.
-func WeightNotIn(vs ...int32) predicate.Patient {
+func WeightNotIn(vs ...float64) predicate.Patient {
 	return predicate.Patient(sql.FieldNotIn(FieldWeight, vs...))
 }
 
 // WeightGT applies the GT predicate on the "weight" field.
-func WeightGT(v int32) predicate.Patient {
+func WeightGT(v float64) predicate.Patient {
 	return predicate.Patient(sql.FieldGT(FieldWeight, v))
 }
 
 // WeightGTE applies the GTE predicate on the "weight" field.
-func WeightGTE(v int32) predicate.Patient {
+func WeightGTE(v float64) predicate.Patient {
 	return predicate.Patient(sql.FieldGTE(FieldWeight, v))
 }
 
 // WeightLT applies the LT predicate on the "weight" field.
-func WeightLT(v int32) predicate.Patient {
+func WeightLT(v float64) predicate.Patient {
 	return predicate.Patient(sql.FieldLT(FieldWeight, v))
 }
 
 // WeightLTE applies the LTE predicate on the "weight" field.
-func WeightLTE(v int32) predicate.Patient {
+func WeightLTE(v float64) predicate.Patient {
 	return predicate.Patient(sql.FieldLTE(FieldWeight, v))
 }
 
@@ -385,60 +385,60 @@ func RoomNumberNotIn(vs ...int) predicate.Patient {
 }
 
 // DegreeOfDangerEQ applies the EQ predicate on the "degreeOfDanger" field.
-func DegreeOfDangerEQ(v int32) predicate.Patient {
+func DegreeOfDangerEQ(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldEQ(FieldDegreeOfDanger, v))
 }
 
 // DegreeOfDangerNEQ applies the NEQ predicate on the "degreeOfDanger" field.
-func DegreeOfDangerNEQ(v int32) predicate.Patient {
+func DegreeOfDangerNEQ(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldNEQ(FieldDegreeOfDanger, v))
 }
 
 // DegreeOfDangerIn applies the In predicate on the "degreeOfDanger" field.
-func DegreeOfDangerIn(vs ...int32) predicate.Patient {
+func DegreeOfDangerIn(vs ...int) predicate.Patient {
 	return predicate.Patient(sql.FieldIn(FieldDegreeOfDanger, vs...))
 }
 
 // DegreeOfDangerNotIn applies the NotIn predicate on the "degreeOfDanger" field.
-func DegreeOfDangerNotIn(vs ...int32) predicate.Patient {
+func DegreeOfDangerNotIn(vs ...int) predicate.Patient {
 	return predicate.Patient(sql.FieldNotIn(FieldDegreeOfDanger, vs...))
 }
 
 // DegreeOfDangerGT applies the GT predicate on the "degreeOfDanger" field.
-func DegreeOfDangerGT(v int32) predicate.Patient {
+func DegreeOfDangerGT(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldGT(FieldDegreeOfDanger, v))
 }
 
 // DegreeOfDangerGTE applies the GTE predicate on the "degreeOfDanger" field.
-func DegreeOfDangerGTE(v int32) predicate.Patient {
+func DegreeOfDangerGTE(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldGTE(FieldDegreeOfDanger, v))
 }
 
 // DegreeOfDangerLT applies the LT predicate on the "degreeOfDanger" field.
-func DegreeOfDangerLT(v int32) predicate.Patient {
+func DegreeOfDangerLT(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldLT(FieldDegreeOfDanger, v))
 }
 
 // DegreeOfDangerLTE applies the LTE predicate on the "degreeOfDanger" field.
-func DegreeOfDangerLTE(v int32) predicate.Patient {
+func DegreeOfDangerLTE(v int) predicate.Patient {
 	return predicate.Patient(sql.FieldLTE(FieldDegreeOfDanger, v))
 }
 
-// HasRoom applies the HasEdge predicate on the "room" edge.
-func HasRoom() predicate.Patient {
+// HasRepo applies the HasEdge predicate on the "repo" edge.
+func HasRepo() predicate.Patient {
 	return predicate.Patient(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, RoomTable, RoomColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, RepoTable, RepoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasRoomWith applies the HasEdge predicate on the "room" edge with a given conditions (other predicates).
-func HasRoomWith(preds ...predicate.Room) predicate.Patient {
+// HasRepoWith applies the HasEdge predicate on the "repo" edge with a given conditions (other predicates).
+func HasRepoWith(preds ...predicate.Room) predicate.Patient {
 	return predicate.Patient(func(s *sql.Selector) {
-		step := newRoomStep()
+		step := newRepoStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

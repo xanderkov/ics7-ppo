@@ -14,10 +14,10 @@ type Room struct {
 // Fields of the Room.
 func (Room) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int32("number").Unique(),
-		field.Int32("floor"),
-		field.Int32("numberBeds"),
-		field.Int32("numberPatients"),
+		field.Int("number").Unique(),
+		field.Int("floor"),
+		field.Int("numberBeds"),
+		field.Int("numberPatients"),
 		field.String("typeRoom"),
 	}
 }

@@ -7,7 +7,7 @@ import (
 	doctor_dto "hospital/internal/modules/domain/doctor/dto"
 )
 
-//go:generate mockgen -destination mock_test.go -package service . IUserRepo
+//go:generate mockgen -destination mock_test.go -package service . IDoctorRepo
 
 type IDoctorRepo interface {
 	GetByTokenId(ctx context.Context, tokenId string) (*doctor_dto.Doctor, error)

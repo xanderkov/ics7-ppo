@@ -620,15 +620,15 @@ type PatientMutation struct {
 	surname           *string
 	name              *string
 	patronymic        *string
-	height            *int32
-	addheight         *int32
-	weight            *int32
-	addweight         *int32
-	degreeOfDanger    *int32
-	adddegreeOfDanger *int32
+	height            *int
+	addheight         *int
+	weight            *float64
+	addweight         *float64
+	degreeOfDanger    *int
+	adddegreeOfDanger *int
 	clearedFields     map[string]struct{}
-	room              *int
-	clearedroom       bool
+	repo              *int
+	clearedrepo       bool
 	doctor            map[int]struct{}
 	removeddoctor     map[int]struct{}
 	cleareddoctor     bool
@@ -844,13 +844,13 @@ func (m *PatientMutation) ResetPatronymic() {
 }
 
 // SetHeight sets the "height" field.
-func (m *PatientMutation) SetHeight(i int32) {
+func (m *PatientMutation) SetHeight(i int) {
 	m.height = &i
 	m.addheight = nil
 }
 
 // Height returns the value of the "height" field in the mutation.
-func (m *PatientMutation) Height() (r int32, exists bool) {
+func (m *PatientMutation) Height() (r int, exists bool) {
 	v := m.height
 	if v == nil {
 		return
@@ -861,7 +861,7 @@ func (m *PatientMutation) Height() (r int32, exists bool) {
 // OldHeight returns the old "height" field's value of the Patient entity.
 // If the Patient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PatientMutation) OldHeight(ctx context.Context) (v int32, err error) {
+func (m *PatientMutation) OldHeight(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldHeight is only allowed on UpdateOne operations")
 	}
@@ -876,7 +876,7 @@ func (m *PatientMutation) OldHeight(ctx context.Context) (v int32, err error) {
 }
 
 // AddHeight adds i to the "height" field.
-func (m *PatientMutation) AddHeight(i int32) {
+func (m *PatientMutation) AddHeight(i int) {
 	if m.addheight != nil {
 		*m.addheight += i
 	} else {
@@ -885,7 +885,7 @@ func (m *PatientMutation) AddHeight(i int32) {
 }
 
 // AddedHeight returns the value that was added to the "height" field in this mutation.
-func (m *PatientMutation) AddedHeight() (r int32, exists bool) {
+func (m *PatientMutation) AddedHeight() (r int, exists bool) {
 	v := m.addheight
 	if v == nil {
 		return
@@ -900,13 +900,13 @@ func (m *PatientMutation) ResetHeight() {
 }
 
 // SetWeight sets the "weight" field.
-func (m *PatientMutation) SetWeight(i int32) {
-	m.weight = &i
+func (m *PatientMutation) SetWeight(f float64) {
+	m.weight = &f
 	m.addweight = nil
 }
 
 // Weight returns the value of the "weight" field in the mutation.
-func (m *PatientMutation) Weight() (r int32, exists bool) {
+func (m *PatientMutation) Weight() (r float64, exists bool) {
 	v := m.weight
 	if v == nil {
 		return
@@ -917,7 +917,7 @@ func (m *PatientMutation) Weight() (r int32, exists bool) {
 // OldWeight returns the old "weight" field's value of the Patient entity.
 // If the Patient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PatientMutation) OldWeight(ctx context.Context) (v int32, err error) {
+func (m *PatientMutation) OldWeight(ctx context.Context) (v float64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldWeight is only allowed on UpdateOne operations")
 	}
@@ -931,17 +931,17 @@ func (m *PatientMutation) OldWeight(ctx context.Context) (v int32, err error) {
 	return oldValue.Weight, nil
 }
 
-// AddWeight adds i to the "weight" field.
-func (m *PatientMutation) AddWeight(i int32) {
+// AddWeight adds f to the "weight" field.
+func (m *PatientMutation) AddWeight(f float64) {
 	if m.addweight != nil {
-		*m.addweight += i
+		*m.addweight += f
 	} else {
-		m.addweight = &i
+		m.addweight = &f
 	}
 }
 
 // AddedWeight returns the value that was added to the "weight" field in this mutation.
-func (m *PatientMutation) AddedWeight() (r int32, exists bool) {
+func (m *PatientMutation) AddedWeight() (r float64, exists bool) {
 	v := m.addweight
 	if v == nil {
 		return
@@ -957,12 +957,12 @@ func (m *PatientMutation) ResetWeight() {
 
 // SetRoomNumber sets the "roomNumber" field.
 func (m *PatientMutation) SetRoomNumber(i int) {
-	m.room = &i
+	m.repo = &i
 }
 
 // RoomNumber returns the value of the "roomNumber" field in the mutation.
 func (m *PatientMutation) RoomNumber() (r int, exists bool) {
-	v := m.room
+	v := m.repo
 	if v == nil {
 		return
 	}
@@ -988,17 +988,17 @@ func (m *PatientMutation) OldRoomNumber(ctx context.Context) (v int, err error) 
 
 // ResetRoomNumber resets all changes to the "roomNumber" field.
 func (m *PatientMutation) ResetRoomNumber() {
-	m.room = nil
+	m.repo = nil
 }
 
 // SetDegreeOfDanger sets the "degreeOfDanger" field.
-func (m *PatientMutation) SetDegreeOfDanger(i int32) {
+func (m *PatientMutation) SetDegreeOfDanger(i int) {
 	m.degreeOfDanger = &i
 	m.adddegreeOfDanger = nil
 }
 
 // DegreeOfDanger returns the value of the "degreeOfDanger" field in the mutation.
-func (m *PatientMutation) DegreeOfDanger() (r int32, exists bool) {
+func (m *PatientMutation) DegreeOfDanger() (r int, exists bool) {
 	v := m.degreeOfDanger
 	if v == nil {
 		return
@@ -1009,7 +1009,7 @@ func (m *PatientMutation) DegreeOfDanger() (r int32, exists bool) {
 // OldDegreeOfDanger returns the old "degreeOfDanger" field's value of the Patient entity.
 // If the Patient object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PatientMutation) OldDegreeOfDanger(ctx context.Context) (v int32, err error) {
+func (m *PatientMutation) OldDegreeOfDanger(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDegreeOfDanger is only allowed on UpdateOne operations")
 	}
@@ -1024,7 +1024,7 @@ func (m *PatientMutation) OldDegreeOfDanger(ctx context.Context) (v int32, err e
 }
 
 // AddDegreeOfDanger adds i to the "degreeOfDanger" field.
-func (m *PatientMutation) AddDegreeOfDanger(i int32) {
+func (m *PatientMutation) AddDegreeOfDanger(i int) {
 	if m.adddegreeOfDanger != nil {
 		*m.adddegreeOfDanger += i
 	} else {
@@ -1033,7 +1033,7 @@ func (m *PatientMutation) AddDegreeOfDanger(i int32) {
 }
 
 // AddedDegreeOfDanger returns the value that was added to the "degreeOfDanger" field in this mutation.
-func (m *PatientMutation) AddedDegreeOfDanger() (r int32, exists bool) {
+func (m *PatientMutation) AddedDegreeOfDanger() (r int, exists bool) {
 	v := m.adddegreeOfDanger
 	if v == nil {
 		return
@@ -1047,43 +1047,43 @@ func (m *PatientMutation) ResetDegreeOfDanger() {
 	m.adddegreeOfDanger = nil
 }
 
-// SetRoomID sets the "room" edge to the Room entity by id.
-func (m *PatientMutation) SetRoomID(id int) {
-	m.room = &id
+// SetRepoID sets the "repo" edge to the Room entity by id.
+func (m *PatientMutation) SetRepoID(id int) {
+	m.repo = &id
 }
 
-// ClearRoom clears the "room" edge to the Room entity.
-func (m *PatientMutation) ClearRoom() {
-	m.clearedroom = true
+// ClearRepo clears the "repo" edge to the Room entity.
+func (m *PatientMutation) ClearRepo() {
+	m.clearedrepo = true
 }
 
-// RoomCleared reports if the "room" edge to the Room entity was cleared.
-func (m *PatientMutation) RoomCleared() bool {
-	return m.clearedroom
+// RepoCleared reports if the "repo" edge to the Room entity was cleared.
+func (m *PatientMutation) RepoCleared() bool {
+	return m.clearedrepo
 }
 
-// RoomID returns the "room" edge ID in the mutation.
-func (m *PatientMutation) RoomID() (id int, exists bool) {
-	if m.room != nil {
-		return *m.room, true
+// RepoID returns the "repo" edge ID in the mutation.
+func (m *PatientMutation) RepoID() (id int, exists bool) {
+	if m.repo != nil {
+		return *m.repo, true
 	}
 	return
 }
 
-// RoomIDs returns the "room" edge IDs in the mutation.
+// RepoIDs returns the "repo" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// RoomID instead. It exists only for internal usage by the builders.
-func (m *PatientMutation) RoomIDs() (ids []int) {
-	if id := m.room; id != nil {
+// RepoID instead. It exists only for internal usage by the builders.
+func (m *PatientMutation) RepoIDs() (ids []int) {
+	if id := m.repo; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetRoom resets all changes to the "room" edge.
-func (m *PatientMutation) ResetRoom() {
-	m.room = nil
-	m.clearedroom = false
+// ResetRepo resets all changes to the "repo" edge.
+func (m *PatientMutation) ResetRepo() {
+	m.repo = nil
+	m.clearedrepo = false
 }
 
 // AddDoctorIDs adds the "doctor" edge to the Doctor entity by ids.
@@ -1190,7 +1190,7 @@ func (m *PatientMutation) Fields() []string {
 	if m.weight != nil {
 		fields = append(fields, patient.FieldWeight)
 	}
-	if m.room != nil {
+	if m.repo != nil {
 		fields = append(fields, patient.FieldRoomNumber)
 	}
 	if m.degreeOfDanger != nil {
@@ -1272,14 +1272,14 @@ func (m *PatientMutation) SetField(name string, value ent.Value) error {
 		m.SetPatronymic(v)
 		return nil
 	case patient.FieldHeight:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHeight(v)
 		return nil
 	case patient.FieldWeight:
-		v, ok := value.(int32)
+		v, ok := value.(float64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1293,7 +1293,7 @@ func (m *PatientMutation) SetField(name string, value ent.Value) error {
 		m.SetRoomNumber(v)
 		return nil
 	case patient.FieldDegreeOfDanger:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1340,21 +1340,21 @@ func (m *PatientMutation) AddedField(name string) (ent.Value, bool) {
 func (m *PatientMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case patient.FieldHeight:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddHeight(v)
 		return nil
 	case patient.FieldWeight:
-		v, ok := value.(int32)
+		v, ok := value.(float64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddWeight(v)
 		return nil
 	case patient.FieldDegreeOfDanger:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1415,8 +1415,8 @@ func (m *PatientMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *PatientMutation) AddedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.room != nil {
-		edges = append(edges, patient.EdgeRoom)
+	if m.repo != nil {
+		edges = append(edges, patient.EdgeRepo)
 	}
 	if m.doctor != nil {
 		edges = append(edges, patient.EdgeDoctor)
@@ -1428,8 +1428,8 @@ func (m *PatientMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *PatientMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case patient.EdgeRoom:
-		if id := m.room; id != nil {
+	case patient.EdgeRepo:
+		if id := m.repo; id != nil {
 			return []ent.Value{*id}
 		}
 	case patient.EdgeDoctor:
@@ -1468,8 +1468,8 @@ func (m *PatientMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *PatientMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.clearedroom {
-		edges = append(edges, patient.EdgeRoom)
+	if m.clearedrepo {
+		edges = append(edges, patient.EdgeRepo)
 	}
 	if m.cleareddoctor {
 		edges = append(edges, patient.EdgeDoctor)
@@ -1481,8 +1481,8 @@ func (m *PatientMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *PatientMutation) EdgeCleared(name string) bool {
 	switch name {
-	case patient.EdgeRoom:
-		return m.clearedroom
+	case patient.EdgeRepo:
+		return m.clearedrepo
 	case patient.EdgeDoctor:
 		return m.cleareddoctor
 	}
@@ -1493,8 +1493,8 @@ func (m *PatientMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *PatientMutation) ClearEdge(name string) error {
 	switch name {
-	case patient.EdgeRoom:
-		m.ClearRoom()
+	case patient.EdgeRepo:
+		m.ClearRepo()
 		return nil
 	}
 	return fmt.Errorf("unknown Patient unique edge %s", name)
@@ -1504,8 +1504,8 @@ func (m *PatientMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *PatientMutation) ResetEdge(name string) error {
 	switch name {
-	case patient.EdgeRoom:
-		m.ResetRoom()
+	case patient.EdgeRepo:
+		m.ResetRepo()
 		return nil
 	case patient.EdgeDoctor:
 		m.ResetDoctor()
@@ -1520,14 +1520,14 @@ type RoomMutation struct {
 	op                Op
 	typ               string
 	id                *int
-	number            *int32
-	addnumber         *int32
-	floor             *int32
-	addfloor          *int32
-	numberBeds        *int32
-	addnumberBeds     *int32
-	numberPatients    *int32
-	addnumberPatients *int32
+	number            *int
+	addnumber         *int
+	floor             *int
+	addfloor          *int
+	numberBeds        *int
+	addnumberBeds     *int
+	numberPatients    *int
+	addnumberPatients *int
 	typeRoom          *string
 	clearedFields     map[string]struct{}
 	contains          map[int]struct{}
@@ -1637,13 +1637,13 @@ func (m *RoomMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetNumber sets the "number" field.
-func (m *RoomMutation) SetNumber(i int32) {
+func (m *RoomMutation) SetNumber(i int) {
 	m.number = &i
 	m.addnumber = nil
 }
 
 // Number returns the value of the "number" field in the mutation.
-func (m *RoomMutation) Number() (r int32, exists bool) {
+func (m *RoomMutation) Number() (r int, exists bool) {
 	v := m.number
 	if v == nil {
 		return
@@ -1654,7 +1654,7 @@ func (m *RoomMutation) Number() (r int32, exists bool) {
 // OldNumber returns the old "number" field's value of the Room entity.
 // If the Room object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoomMutation) OldNumber(ctx context.Context) (v int32, err error) {
+func (m *RoomMutation) OldNumber(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldNumber is only allowed on UpdateOne operations")
 	}
@@ -1669,7 +1669,7 @@ func (m *RoomMutation) OldNumber(ctx context.Context) (v int32, err error) {
 }
 
 // AddNumber adds i to the "number" field.
-func (m *RoomMutation) AddNumber(i int32) {
+func (m *RoomMutation) AddNumber(i int) {
 	if m.addnumber != nil {
 		*m.addnumber += i
 	} else {
@@ -1678,7 +1678,7 @@ func (m *RoomMutation) AddNumber(i int32) {
 }
 
 // AddedNumber returns the value that was added to the "number" field in this mutation.
-func (m *RoomMutation) AddedNumber() (r int32, exists bool) {
+func (m *RoomMutation) AddedNumber() (r int, exists bool) {
 	v := m.addnumber
 	if v == nil {
 		return
@@ -1693,13 +1693,13 @@ func (m *RoomMutation) ResetNumber() {
 }
 
 // SetFloor sets the "floor" field.
-func (m *RoomMutation) SetFloor(i int32) {
+func (m *RoomMutation) SetFloor(i int) {
 	m.floor = &i
 	m.addfloor = nil
 }
 
 // Floor returns the value of the "floor" field in the mutation.
-func (m *RoomMutation) Floor() (r int32, exists bool) {
+func (m *RoomMutation) Floor() (r int, exists bool) {
 	v := m.floor
 	if v == nil {
 		return
@@ -1710,7 +1710,7 @@ func (m *RoomMutation) Floor() (r int32, exists bool) {
 // OldFloor returns the old "floor" field's value of the Room entity.
 // If the Room object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoomMutation) OldFloor(ctx context.Context) (v int32, err error) {
+func (m *RoomMutation) OldFloor(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFloor is only allowed on UpdateOne operations")
 	}
@@ -1725,7 +1725,7 @@ func (m *RoomMutation) OldFloor(ctx context.Context) (v int32, err error) {
 }
 
 // AddFloor adds i to the "floor" field.
-func (m *RoomMutation) AddFloor(i int32) {
+func (m *RoomMutation) AddFloor(i int) {
 	if m.addfloor != nil {
 		*m.addfloor += i
 	} else {
@@ -1734,7 +1734,7 @@ func (m *RoomMutation) AddFloor(i int32) {
 }
 
 // AddedFloor returns the value that was added to the "floor" field in this mutation.
-func (m *RoomMutation) AddedFloor() (r int32, exists bool) {
+func (m *RoomMutation) AddedFloor() (r int, exists bool) {
 	v := m.addfloor
 	if v == nil {
 		return
@@ -1749,13 +1749,13 @@ func (m *RoomMutation) ResetFloor() {
 }
 
 // SetNumberBeds sets the "numberBeds" field.
-func (m *RoomMutation) SetNumberBeds(i int32) {
+func (m *RoomMutation) SetNumberBeds(i int) {
 	m.numberBeds = &i
 	m.addnumberBeds = nil
 }
 
 // NumberBeds returns the value of the "numberBeds" field in the mutation.
-func (m *RoomMutation) NumberBeds() (r int32, exists bool) {
+func (m *RoomMutation) NumberBeds() (r int, exists bool) {
 	v := m.numberBeds
 	if v == nil {
 		return
@@ -1766,7 +1766,7 @@ func (m *RoomMutation) NumberBeds() (r int32, exists bool) {
 // OldNumberBeds returns the old "numberBeds" field's value of the Room entity.
 // If the Room object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoomMutation) OldNumberBeds(ctx context.Context) (v int32, err error) {
+func (m *RoomMutation) OldNumberBeds(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldNumberBeds is only allowed on UpdateOne operations")
 	}
@@ -1781,7 +1781,7 @@ func (m *RoomMutation) OldNumberBeds(ctx context.Context) (v int32, err error) {
 }
 
 // AddNumberBeds adds i to the "numberBeds" field.
-func (m *RoomMutation) AddNumberBeds(i int32) {
+func (m *RoomMutation) AddNumberBeds(i int) {
 	if m.addnumberBeds != nil {
 		*m.addnumberBeds += i
 	} else {
@@ -1790,7 +1790,7 @@ func (m *RoomMutation) AddNumberBeds(i int32) {
 }
 
 // AddedNumberBeds returns the value that was added to the "numberBeds" field in this mutation.
-func (m *RoomMutation) AddedNumberBeds() (r int32, exists bool) {
+func (m *RoomMutation) AddedNumberBeds() (r int, exists bool) {
 	v := m.addnumberBeds
 	if v == nil {
 		return
@@ -1805,13 +1805,13 @@ func (m *RoomMutation) ResetNumberBeds() {
 }
 
 // SetNumberPatients sets the "numberPatients" field.
-func (m *RoomMutation) SetNumberPatients(i int32) {
+func (m *RoomMutation) SetNumberPatients(i int) {
 	m.numberPatients = &i
 	m.addnumberPatients = nil
 }
 
 // NumberPatients returns the value of the "numberPatients" field in the mutation.
-func (m *RoomMutation) NumberPatients() (r int32, exists bool) {
+func (m *RoomMutation) NumberPatients() (r int, exists bool) {
 	v := m.numberPatients
 	if v == nil {
 		return
@@ -1822,7 +1822,7 @@ func (m *RoomMutation) NumberPatients() (r int32, exists bool) {
 // OldNumberPatients returns the old "numberPatients" field's value of the Room entity.
 // If the Room object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoomMutation) OldNumberPatients(ctx context.Context) (v int32, err error) {
+func (m *RoomMutation) OldNumberPatients(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldNumberPatients is only allowed on UpdateOne operations")
 	}
@@ -1837,7 +1837,7 @@ func (m *RoomMutation) OldNumberPatients(ctx context.Context) (v int32, err erro
 }
 
 // AddNumberPatients adds i to the "numberPatients" field.
-func (m *RoomMutation) AddNumberPatients(i int32) {
+func (m *RoomMutation) AddNumberPatients(i int) {
 	if m.addnumberPatients != nil {
 		*m.addnumberPatients += i
 	} else {
@@ -1846,7 +1846,7 @@ func (m *RoomMutation) AddNumberPatients(i int32) {
 }
 
 // AddedNumberPatients returns the value that was added to the "numberPatients" field in this mutation.
-func (m *RoomMutation) AddedNumberPatients() (r int32, exists bool) {
+func (m *RoomMutation) AddedNumberPatients() (r int, exists bool) {
 	v := m.addnumberPatients
 	if v == nil {
 		return
@@ -2047,28 +2047,28 @@ func (m *RoomMutation) OldField(ctx context.Context, name string) (ent.Value, er
 func (m *RoomMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case room.FieldNumber:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetNumber(v)
 		return nil
 	case room.FieldFloor:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFloor(v)
 		return nil
 	case room.FieldNumberBeds:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetNumberBeds(v)
 		return nil
 	case room.FieldNumberPatients:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2127,28 +2127,28 @@ func (m *RoomMutation) AddedField(name string) (ent.Value, bool) {
 func (m *RoomMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case room.FieldNumber:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddNumber(v)
 		return nil
 	case room.FieldFloor:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddFloor(v)
 		return nil
 	case room.FieldNumberBeds:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddNumberBeds(v)
 		return nil
 	case room.FieldNumberPatients:
-		v, ok := value.(int32)
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

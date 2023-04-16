@@ -17,17 +17,17 @@ func (Patient) Fields() []ent.Field {
 		field.String("surname"),
 		field.String("name"),
 		field.String("patronymic"),
-		field.Int32("height"),
-		field.Int32("weight"),
+		field.Int("height"),
+		field.Float("weight"),
 		field.Int("roomNumber"),
-		field.Int32("degreeOfDanger"),
+		field.Int("degreeOfDanger"),
 	}
 }
 
 // Edges of the Patient.
 func (Patient) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("room", Room.Type).
+		edge.From("repo", Room.Type).
 			Ref("contains").
 			Field("roomNumber").
 			Unique().

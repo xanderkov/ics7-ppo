@@ -298,7 +298,7 @@ func (rq *RoomQuery) WithContains(opts ...func(*PatientQuery)) *RoomQuery {
 // Example:
 //
 //	var v []struct {
-//		Number int32 `json:"number,omitempty"`
+//		Number int `json:"number,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -321,7 +321,7 @@ func (rq *RoomQuery) GroupBy(field string, fields ...string) *RoomGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Number int32 `json:"number,omitempty"`
+//		Number int `json:"number,omitempty"`
 //	}
 //
 //	client.Room.Query().

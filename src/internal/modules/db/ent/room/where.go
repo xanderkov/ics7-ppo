@@ -55,22 +55,22 @@ func IDLTE(id int) predicate.Room {
 }
 
 // Number applies equality check predicate on the "number" field. It's identical to NumberEQ.
-func Number(v int32) predicate.Room {
+func Number(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldNumber, v))
 }
 
 // Floor applies equality check predicate on the "floor" field. It's identical to FloorEQ.
-func Floor(v int32) predicate.Room {
+func Floor(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldFloor, v))
 }
 
 // NumberBeds applies equality check predicate on the "numberBeds" field. It's identical to NumberBedsEQ.
-func NumberBeds(v int32) predicate.Room {
+func NumberBeds(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldNumberBeds, v))
 }
 
 // NumberPatients applies equality check predicate on the "numberPatients" field. It's identical to NumberPatientsEQ.
-func NumberPatients(v int32) predicate.Room {
+func NumberPatients(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldNumberPatients, v))
 }
 
@@ -80,162 +80,162 @@ func TypeRoom(v string) predicate.Room {
 }
 
 // NumberEQ applies the EQ predicate on the "number" field.
-func NumberEQ(v int32) predicate.Room {
+func NumberEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldNumber, v))
 }
 
 // NumberNEQ applies the NEQ predicate on the "number" field.
-func NumberNEQ(v int32) predicate.Room {
+func NumberNEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldNEQ(FieldNumber, v))
 }
 
 // NumberIn applies the In predicate on the "number" field.
-func NumberIn(vs ...int32) predicate.Room {
+func NumberIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldIn(FieldNumber, vs...))
 }
 
 // NumberNotIn applies the NotIn predicate on the "number" field.
-func NumberNotIn(vs ...int32) predicate.Room {
+func NumberNotIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldNotIn(FieldNumber, vs...))
 }
 
 // NumberGT applies the GT predicate on the "number" field.
-func NumberGT(v int32) predicate.Room {
+func NumberGT(v int) predicate.Room {
 	return predicate.Room(sql.FieldGT(FieldNumber, v))
 }
 
 // NumberGTE applies the GTE predicate on the "number" field.
-func NumberGTE(v int32) predicate.Room {
+func NumberGTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldGTE(FieldNumber, v))
 }
 
 // NumberLT applies the LT predicate on the "number" field.
-func NumberLT(v int32) predicate.Room {
+func NumberLT(v int) predicate.Room {
 	return predicate.Room(sql.FieldLT(FieldNumber, v))
 }
 
 // NumberLTE applies the LTE predicate on the "number" field.
-func NumberLTE(v int32) predicate.Room {
+func NumberLTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldLTE(FieldNumber, v))
 }
 
 // FloorEQ applies the EQ predicate on the "floor" field.
-func FloorEQ(v int32) predicate.Room {
+func FloorEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldFloor, v))
 }
 
 // FloorNEQ applies the NEQ predicate on the "floor" field.
-func FloorNEQ(v int32) predicate.Room {
+func FloorNEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldNEQ(FieldFloor, v))
 }
 
 // FloorIn applies the In predicate on the "floor" field.
-func FloorIn(vs ...int32) predicate.Room {
+func FloorIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldIn(FieldFloor, vs...))
 }
 
 // FloorNotIn applies the NotIn predicate on the "floor" field.
-func FloorNotIn(vs ...int32) predicate.Room {
+func FloorNotIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldNotIn(FieldFloor, vs...))
 }
 
 // FloorGT applies the GT predicate on the "floor" field.
-func FloorGT(v int32) predicate.Room {
+func FloorGT(v int) predicate.Room {
 	return predicate.Room(sql.FieldGT(FieldFloor, v))
 }
 
 // FloorGTE applies the GTE predicate on the "floor" field.
-func FloorGTE(v int32) predicate.Room {
+func FloorGTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldGTE(FieldFloor, v))
 }
 
 // FloorLT applies the LT predicate on the "floor" field.
-func FloorLT(v int32) predicate.Room {
+func FloorLT(v int) predicate.Room {
 	return predicate.Room(sql.FieldLT(FieldFloor, v))
 }
 
 // FloorLTE applies the LTE predicate on the "floor" field.
-func FloorLTE(v int32) predicate.Room {
+func FloorLTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldLTE(FieldFloor, v))
 }
 
 // NumberBedsEQ applies the EQ predicate on the "numberBeds" field.
-func NumberBedsEQ(v int32) predicate.Room {
+func NumberBedsEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldNumberBeds, v))
 }
 
 // NumberBedsNEQ applies the NEQ predicate on the "numberBeds" field.
-func NumberBedsNEQ(v int32) predicate.Room {
+func NumberBedsNEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldNEQ(FieldNumberBeds, v))
 }
 
 // NumberBedsIn applies the In predicate on the "numberBeds" field.
-func NumberBedsIn(vs ...int32) predicate.Room {
+func NumberBedsIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldIn(FieldNumberBeds, vs...))
 }
 
 // NumberBedsNotIn applies the NotIn predicate on the "numberBeds" field.
-func NumberBedsNotIn(vs ...int32) predicate.Room {
+func NumberBedsNotIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldNotIn(FieldNumberBeds, vs...))
 }
 
 // NumberBedsGT applies the GT predicate on the "numberBeds" field.
-func NumberBedsGT(v int32) predicate.Room {
+func NumberBedsGT(v int) predicate.Room {
 	return predicate.Room(sql.FieldGT(FieldNumberBeds, v))
 }
 
 // NumberBedsGTE applies the GTE predicate on the "numberBeds" field.
-func NumberBedsGTE(v int32) predicate.Room {
+func NumberBedsGTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldGTE(FieldNumberBeds, v))
 }
 
 // NumberBedsLT applies the LT predicate on the "numberBeds" field.
-func NumberBedsLT(v int32) predicate.Room {
+func NumberBedsLT(v int) predicate.Room {
 	return predicate.Room(sql.FieldLT(FieldNumberBeds, v))
 }
 
 // NumberBedsLTE applies the LTE predicate on the "numberBeds" field.
-func NumberBedsLTE(v int32) predicate.Room {
+func NumberBedsLTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldLTE(FieldNumberBeds, v))
 }
 
 // NumberPatientsEQ applies the EQ predicate on the "numberPatients" field.
-func NumberPatientsEQ(v int32) predicate.Room {
+func NumberPatientsEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldEQ(FieldNumberPatients, v))
 }
 
 // NumberPatientsNEQ applies the NEQ predicate on the "numberPatients" field.
-func NumberPatientsNEQ(v int32) predicate.Room {
+func NumberPatientsNEQ(v int) predicate.Room {
 	return predicate.Room(sql.FieldNEQ(FieldNumberPatients, v))
 }
 
 // NumberPatientsIn applies the In predicate on the "numberPatients" field.
-func NumberPatientsIn(vs ...int32) predicate.Room {
+func NumberPatientsIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldIn(FieldNumberPatients, vs...))
 }
 
 // NumberPatientsNotIn applies the NotIn predicate on the "numberPatients" field.
-func NumberPatientsNotIn(vs ...int32) predicate.Room {
+func NumberPatientsNotIn(vs ...int) predicate.Room {
 	return predicate.Room(sql.FieldNotIn(FieldNumberPatients, vs...))
 }
 
 // NumberPatientsGT applies the GT predicate on the "numberPatients" field.
-func NumberPatientsGT(v int32) predicate.Room {
+func NumberPatientsGT(v int) predicate.Room {
 	return predicate.Room(sql.FieldGT(FieldNumberPatients, v))
 }
 
 // NumberPatientsGTE applies the GTE predicate on the "numberPatients" field.
-func NumberPatientsGTE(v int32) predicate.Room {
+func NumberPatientsGTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldGTE(FieldNumberPatients, v))
 }
 
 // NumberPatientsLT applies the LT predicate on the "numberPatients" field.
-func NumberPatientsLT(v int32) predicate.Room {
+func NumberPatientsLT(v int) predicate.Room {
 	return predicate.Room(sql.FieldLT(FieldNumberPatients, v))
 }
 
 // NumberPatientsLTE applies the LTE predicate on the "numberPatients" field.
-func NumberPatientsLTE(v int32) predicate.Room {
+func NumberPatientsLTE(v int) predicate.Room {
 	return predicate.Room(sql.FieldLTE(FieldNumberPatients, v))
 }
 

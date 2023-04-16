@@ -21,25 +21,25 @@ type RoomCreate struct {
 }
 
 // SetNumber sets the "number" field.
-func (rc *RoomCreate) SetNumber(i int32) *RoomCreate {
+func (rc *RoomCreate) SetNumber(i int) *RoomCreate {
 	rc.mutation.SetNumber(i)
 	return rc
 }
 
 // SetFloor sets the "floor" field.
-func (rc *RoomCreate) SetFloor(i int32) *RoomCreate {
+func (rc *RoomCreate) SetFloor(i int) *RoomCreate {
 	rc.mutation.SetFloor(i)
 	return rc
 }
 
 // SetNumberBeds sets the "numberBeds" field.
-func (rc *RoomCreate) SetNumberBeds(i int32) *RoomCreate {
+func (rc *RoomCreate) SetNumberBeds(i int) *RoomCreate {
 	rc.mutation.SetNumberBeds(i)
 	return rc
 }
 
 // SetNumberPatients sets the "numberPatients" field.
-func (rc *RoomCreate) SetNumberPatients(i int32) *RoomCreate {
+func (rc *RoomCreate) SetNumberPatients(i int) *RoomCreate {
 	rc.mutation.SetNumberPatients(i)
 	return rc
 }
@@ -141,19 +141,19 @@ func (rc *RoomCreate) createSpec() (*Room, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(room.Table, sqlgraph.NewFieldSpec(room.FieldID, field.TypeInt))
 	)
 	if value, ok := rc.mutation.Number(); ok {
-		_spec.SetField(room.FieldNumber, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumber, field.TypeInt, value)
 		_node.Number = value
 	}
 	if value, ok := rc.mutation.Floor(); ok {
-		_spec.SetField(room.FieldFloor, field.TypeInt32, value)
+		_spec.SetField(room.FieldFloor, field.TypeInt, value)
 		_node.Floor = value
 	}
 	if value, ok := rc.mutation.NumberBeds(); ok {
-		_spec.SetField(room.FieldNumberBeds, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumberBeds, field.TypeInt, value)
 		_node.NumberBeds = value
 	}
 	if value, ok := rc.mutation.NumberPatients(); ok {
-		_spec.SetField(room.FieldNumberPatients, field.TypeInt32, value)
+		_spec.SetField(room.FieldNumberPatients, field.TypeInt, value)
 		_node.NumberPatients = value
 	}
 	if value, ok := rc.mutation.TypeRoom(); ok {
