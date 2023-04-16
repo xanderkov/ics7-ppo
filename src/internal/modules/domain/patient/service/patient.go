@@ -8,11 +8,11 @@ import (
 //go:generate mockgen -destination mock_test.go -package service . IPatientRepo
 
 type IPatientRepo interface {
-	GetById(ctx context.Context, id int32) (*dto.Patient, error)
+	GetById(ctx context.Context, id int) (*dto.Patient, error)
 	List(ctx context.Context) (dto.Patients, error)
 	Create(ctx context.Context, dtm *dto.CreatePatient) (*dto.Patient, error)
-	Update(ctx context.Context, num int32, dtm *dto.UpdatePatient) (*dto.Patient, error)
-	Delete(ctx context.Context, num int32) error
+	Update(ctx context.Context, num int, dtm *dto.UpdatePatient) (*dto.Patient, error)
+	Delete(ctx context.Context, num int) error
 }
 
 type PatientService struct {
@@ -25,7 +25,7 @@ func NewPatientService(repo IPatientRepo) *PatientService {
 	}
 }
 
-func (r *PatientService) GetById(ctx context.Context, id int32) (*dto.Patient, error) {
+func (r *PatientService) GetById(ctx context.Context, id int) (*dto.Patient, error) {
 	return r.repo.GetById(ctx, id)
 }
 
@@ -37,10 +37,10 @@ func (r *PatientService) Create(ctx context.Context, dtm *dto.CreatePatient) (*d
 	return r.repo.Create(ctx, dtm)
 }
 
-func (r *PatientService) Update(ctx context.Context, id int32, dtm *dto.UpdatePatient) (*dto.Patient, error) {
+func (r *PatientService) Update(ctx context.Context, id int, dtm *dto.UpdatePatient) (*dto.Patient, error) {
 	return r.repo.Update(ctx, id, dtm)
 }
 
-func (r *PatientService) Delete(ctx context.Context, id int32) error {
+func (r *PatientService) Delete(ctx context.Context, id int) error {
 	return r.repo.Delete(ctx, id)
 }
