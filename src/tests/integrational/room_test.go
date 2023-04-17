@@ -59,16 +59,15 @@ func roomServiceTest(t *testing.T, service *service.RoomService, authService *au
 		Floor:          room.Floor,
 		TypeRoom:       room.TypeRoom,
 	}
-	t2, err := service.Update(ctx, room.Num, updateUser)
+	t2, err := service.Update(ctx, room.Id, updateUser)
 	assert.NoError(t, err)
 	assert.Equal(t, room, t2)
 
-	err = service.Delete(ctx, room.Num)
+	err = service.Delete(ctx, room.Id)
 	assert.NoError(t, err)
 
-	t3, err := service.GetByNum(ctx, room.Num)
+	_, err = service.GetByNum(ctx, room.Id)
 	assert.Error(t, err)
-	assert.Equal(t, nil, t3)
 
 	ts2, err := service.List(ctx)
 	assert.NoError(t, err)

@@ -41,7 +41,7 @@ func patientServiceTest(t *testing.T, service *service.PatientService, authServi
 		Floor:          2,
 		TypeRoom:       "5",
 	}
-	_, err = roomService.Create(ctx, newroom)
+	room, err := roomService.Create(ctx, newroom)
 	assert.NoError(t, err)
 	if err != nil {
 		return
@@ -53,7 +53,7 @@ func patientServiceTest(t *testing.T, service *service.PatientService, authServi
 		Patronymic:     "Denisovich",
 		Height:         183,
 		Weight:         80,
-		RoomNumber:     1,
+		RoomNumber:     room.Id,
 		DegreeOfDanger: 10,
 	}
 	patient, err := service.Create(ctx, newpatient)
@@ -70,7 +70,7 @@ func patientServiceTest(t *testing.T, service *service.PatientService, authServi
 	assert.NoError(t, err)
 	assert.Equal(t, patient, ts1[0])
 
-	patient.Id += 1
+	patient.Height += 1
 	updateUser := &dto.UpdatePatient{
 		Name:           patient.Name,
 		Surname:        patient.Surname,
@@ -81,15 +81,14 @@ func patientServiceTest(t *testing.T, service *service.PatientService, authServi
 		DegreeOfDanger: patient.DegreeOfDanger,
 	}
 	t2, err := service.Update(ctx, patient.Id, updateUser)
-	assert.Error(t, err)
-	assert.Equal(t, nil, t2)
+	assert.NoError(t, err)
+	assert.Equal(t, patient, t2)
 
 	err = service.Delete(ctx, patient.Id)
 	assert.NoError(t, err)
 
-	t3, err := service.GetById(ctx, patient.Id)
-	assert.NoError(t, err)
-	assert.Equal(t, patient, t3)
+	_, err = service.GetById(ctx, patient.Id)
+	assert.Error(t, err)
 
 	ts2, err := service.List(ctx)
 	assert.NoError(t, err)

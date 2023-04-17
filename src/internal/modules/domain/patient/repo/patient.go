@@ -91,6 +91,7 @@ func ToPatientDTO(model *ent.Patient) *dto.Patient {
 		return nil
 	}
 	return &dto.Patient{
+		Id:             model.ID,
 		Name:           model.Name,
 		Surname:        model.Surname,
 		Patronymic:     model.Patronymic,

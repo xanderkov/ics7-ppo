@@ -87,6 +87,7 @@ func ToRoomDTO(model *ent.Room) *dto.Room {
 		return nil
 	}
 	return &dto.Room{
+		Id:             model.ID,
 		TypeRoom:       model.TypeRoom,
 		NumberBeds:     model.NumberBeds,
 		Floor:          model.Floor,
