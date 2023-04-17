@@ -18,6 +18,7 @@ type CreateDoctor struct {
 }
 
 type UpdateDoctor struct {
+	TokenId    string
 	Surname    string
 	Speciality string
 	Role       string

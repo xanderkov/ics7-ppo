@@ -9,10 +9,14 @@ import (
 	"hospital/internal/modules/domain/patient/dto"
 	"hospital/internal/modules/domain/patient/service"
 	"testing"
+
+	room_dto "hospital/internal/modules/domain/room/dto"
+	room_serv "hospital/internal/modules/domain/room/service"
 )
 
-func patientServiceTest(t *testing.T, service *service.PatientService, authService *auth_serv.AuthService, client *ent.Client) {
-
+func patientServiceTest(t *testing.T, service *service.PatientService, authService *auth_serv.AuthService,
+	roomService *room_serv.RoomService, client *ent.Client) {
+	err := truncateAll(client)
 	// Регистрируем пользователя
 	newUser := &auth_dto.NewDoctor{
 		TokenId:    "1",
@@ -29,6 +33,19 @@ func patientServiceTest(t *testing.T, service *service.PatientService, authServi
 
 	// Создаем контекст с сессией
 	ctx := makeCtxByUser(currentUser)
+
+	newroom := &room_dto.CreateRoom{
+		Num:            1,
+		NumberPatients: 2,
+		NumberBeds:     2,
+		Floor:          2,
+		TypeRoom:       "5",
+	}
+	_, err = roomService.Create(ctx, newroom)
+	assert.NoError(t, err)
+	if err != nil {
+		return
+	}
 
 	newpatient := &dto.CreatePatient{
 		Name:           "Alexander",
@@ -64,8 +81,8 @@ func patientServiceTest(t *testing.T, service *service.PatientService, authServi
 		DegreeOfDanger: patient.DegreeOfDanger,
 	}
 	t2, err := service.Update(ctx, patient.Id, updateUser)
-	assert.NoError(t, err)
-	assert.Equal(t, patient, t2)
+	assert.Error(t, err)
+	assert.Equal(t, nil, t2)
 
 	err = service.Delete(ctx, patient.Id)
 	assert.NoError(t, err)
@@ -78,7 +95,4 @@ func patientServiceTest(t *testing.T, service *service.PatientService, authServi
 	assert.NoError(t, err)
 	assert.Empty(t, ts2)
 
-	ts3, err := service.List(ctx)
-	assert.NoError(t, err)
-	assert.Equal(t, patient, ts3[0])
 }

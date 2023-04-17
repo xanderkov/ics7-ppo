@@ -12,7 +12,7 @@ import (
 )
 
 func roomServiceTest(t *testing.T, service *service.RoomService, authService *auth_serv.AuthService, client *ent.Client) {
-
+	err := truncateAll(client)
 	// Регистрируем пользователя
 	newUser := &auth_dto.NewDoctor{
 		TokenId:    "1",
@@ -31,6 +31,7 @@ func roomServiceTest(t *testing.T, service *service.RoomService, authService *au
 	ctx := makeCtxByUser(currentUser)
 
 	newroom := &dto.CreateRoom{
+		Num:            1,
 		NumberPatients: 2,
 		NumberBeds:     2,
 		Floor:          2,
@@ -42,7 +43,7 @@ func roomServiceTest(t *testing.T, service *service.RoomService, authService *au
 		return
 	}
 
-	t1, err := service.GetByNum(ctx, room.Num)
+	t1, err := service.GetByNum(ctx, room.Id)
 	assert.NoError(t, err)
 	assert.Equal(t, room, t1)
 
@@ -50,8 +51,9 @@ func roomServiceTest(t *testing.T, service *service.RoomService, authService *au
 	assert.NoError(t, err)
 	assert.Equal(t, room, ts1[0])
 
-	room.Num += 1
+	room.Floor += 1
 	updateUser := &dto.UpdateRoom{
+		Num:            room.Num,
 		NumberPatients: room.NumberPatients,
 		NumberBeds:     room.NumberBeds,
 		Floor:          room.Floor,
@@ -65,14 +67,11 @@ func roomServiceTest(t *testing.T, service *service.RoomService, authService *au
 	assert.NoError(t, err)
 
 	t3, err := service.GetByNum(ctx, room.Num)
-	assert.NoError(t, err)
-	assert.Equal(t, room, t3)
+	assert.Error(t, err)
+	assert.Equal(t, nil, t3)
 
 	ts2, err := service.List(ctx)
 	assert.NoError(t, err)
 	assert.Empty(t, ts2)
 
-	ts3, err := service.List(ctx)
-	assert.NoError(t, err)
-	assert.Equal(t, room, ts3[0])
 }

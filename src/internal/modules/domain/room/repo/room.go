@@ -17,7 +17,7 @@ func NewRoomRepo(client *ent.Client) *RoomRepo {
 	}
 }
 
-func (r *RoomRepo) GetById(ctx context.Context, id int) (*dto.Room, error) {
+func (r *RoomRepo) GetByNum(ctx context.Context, id int) (*dto.Room, error) {
 	Room, err := r.client.Room.Get(ctx, id)
 	if err != nil {
 		return nil, db.WrapError(err)
@@ -37,6 +37,7 @@ func (r *RoomRepo) List(ctx context.Context) (dto.Rooms, error) {
 
 func (r *RoomRepo) Create(ctx context.Context, dtm *dto.CreateRoom) (*dto.Room, error) {
 	Room, err := r.client.Room.Create().
+		SetNumber(dtm.Num).
 		SetNumberPatients(dtm.NumberPatients).
 		SetFloor(dtm.Floor).
 		SetNumberBeds(dtm.NumberBeds).

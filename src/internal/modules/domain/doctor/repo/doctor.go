@@ -26,6 +26,15 @@ func (r *DoctorRepo) GetById(ctx context.Context, id int) (*dto.Doctor, error) {
 	return ToDoctorDTO(Doctor), nil
 }
 
+func (r *DoctorRepo) GetByTokenId(ctx context.Context, token string) (*dto.Doctor, error) {
+	Doctor, err := r.client.Doctor.Get(ctx, 0)
+	if err != nil {
+		return nil, db.WrapError(err)
+	}
+
+	return ToDoctorDTO(Doctor), nil
+}
+
 func (r *DoctorRepo) List(ctx context.Context) (dto.Doctors, error) {
 	Doctors, err := r.client.Doctor.Query().All(ctx)
 	if err != nil {
@@ -51,6 +60,7 @@ func (r *DoctorRepo) Create(ctx context.Context, dtm *dto.CreateDoctor) (*dto.Do
 
 func (r *DoctorRepo) Update(ctx context.Context, id int, dtm *dto.UpdateDoctor) (*dto.Doctor, error) {
 	Doctor, err := r.client.Doctor.UpdateOneID(id).
+		SetTokenId(dtm.TokenId).
 		SetSurname(dtm.Surname).
 		SetRole(dtm.Role).
 		SetSpeciality(dtm.Speciality).

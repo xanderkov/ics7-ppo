@@ -13,7 +13,7 @@ import (
 )
 
 func doctorServiceTest(t *testing.T, DoctorService *doctor_server.DoctorService, authService *auth_serv.AuthService, client *ent.Client) {
-
+	err := truncateAll(client)
 	// Регистрируем пользователя
 	newDoctor := &auth_dto.NewDoctor{
 		TokenId:    "1",
@@ -44,6 +44,7 @@ func doctorServiceTest(t *testing.T, DoctorService *doctor_server.DoctorService,
 		Surname:    currentDoctor.Surname,
 		Speciality: currentDoctor.Speciality,
 		Role:       currentDoctor.Role,
+		TokenId:    currentDoctor.TokenId,
 	}
 	u2, err := DoctorService.Update(ctx, currentDoctor.Id, updateDoctor)
 	assert.NoError(t, err)
@@ -52,15 +53,11 @@ func doctorServiceTest(t *testing.T, DoctorService *doctor_server.DoctorService,
 	err = DoctorService.Delete(ctx, currentDoctor.Id)
 	assert.NoError(t, err)
 
-	u3, err := DoctorService.GetById(ctx, currentDoctor.Id)
-	assert.NoError(t, err)
-	assert.Equal(t, currentDoctor, u3)
+	_, err = DoctorService.GetById(ctx, currentDoctor.Id)
+	assert.Error(t, err)
 
 	Doctors2, err := DoctorService.List(ctx)
 	assert.NoError(t, err)
 	assert.Empty(t, Doctors2)
 
-	Doctors3, err := DoctorService.List(ctx)
-	assert.NoError(t, err)
-	assert.Equal(t, currentDoctor, Doctors3[0])
 }

@@ -19,7 +19,7 @@ var (
 	Invokables = fx.Options(
 
 		doctor.Invokables,
-		patient.Module,
+		patient.Invokables,
 		room.Invokables,
 		auth.Invokables,
 	)

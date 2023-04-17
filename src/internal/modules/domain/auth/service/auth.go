@@ -10,7 +10,7 @@ import (
 //go:generate mockgen -destination mock_test.go -package service . IDoctorRepo
 
 type IDoctorRepo interface {
-	GetByTokenId(ctx context.Context, tokenId string) (*doctor_dto.Doctor, error)
+	// GetByTokenId(ctx context.Context, tokenId string) (*doctor_dto.Doctor, error)
 	Create(ctx context.Context, dtm *doctor_dto.CreateDoctor) (*doctor_dto.Doctor, error)
 }
 

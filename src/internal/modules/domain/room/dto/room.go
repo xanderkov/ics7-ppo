@@ -1,6 +1,7 @@
 package dto
 
 type Room struct {
+	Id             int
 	Num            int
 	Floor          int
 	NumberBeds     int
@@ -11,6 +12,7 @@ type Room struct {
 type Rooms []*Room
 
 type CreateRoom struct {
+	Num            int
 	Floor          int
 	NumberBeds     int
 	TypeRoom       string
@@ -18,6 +20,7 @@ type CreateRoom struct {
 }
 
 type UpdateRoom struct {
+	Num            int
 	Floor          int
 	NumberBeds     int
 	TypeRoom       string

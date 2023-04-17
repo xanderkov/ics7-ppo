@@ -43,6 +43,7 @@ func (r *PatientRepo) Create(ctx context.Context, dtm *dto.CreatePatient) (*dto.
 		SetDegreeOfDanger(dtm.DegreeOfDanger).
 		SetSurname(dtm.Surname).
 		SetWeight(dtm.Weight).
+		SetRoomNumber(dtm.RoomNumber).
 		Save(ctx)
 	if err != nil {
 		return nil, db.WrapError(err)

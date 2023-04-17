@@ -39,8 +39,8 @@ func execTests(
 		OnStart: func(ctx context.Context) error {
 			go func() {
 				doctorServiceTest(t, doctorService, authService, client)
-				patientServiceTest(t, patientService, authService, client)
 				roomServiceTest(t, roomService, authService, client)
+				patientServiceTest(t, patientService, authService, roomService, client)
 
 				_ = shutdowner.Shutdown()
 			}()
