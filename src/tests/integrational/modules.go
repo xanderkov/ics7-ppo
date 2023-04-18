@@ -25,7 +25,7 @@ var (
 	)
 	testInvokables = fx.Options(
 		app.Invokables,
-		logger.Invokables,
+		// logger.Invokables,
 		config.Invokables,
 		db.Invokables,
 		domain.Invokables,

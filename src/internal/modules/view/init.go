@@ -4,12 +4,19 @@ import (
 	"context"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
-	"hospital/internal/modules/db/ent"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
 	"hospital/internal/modules/view/controllers"
 	"log"
 	"os"
 	"strconv"
+)
+
+var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("singup", "/singup"),
+		tgbotapi.NewInlineKeyboardButtonData("help", "/help"),
+		tgbotapi.NewInlineKeyboardButtonData("status", "/status"),
+	),
 )
 
 func goDotEnvVariable(key string) string {
@@ -20,26 +27,37 @@ func goDotEnvVariable(key string) string {
 	return os.Getenv(key)
 }
 
-func singUp(bot *tgbotapi.BotAPI, chatId int64, update tgbotapi.Update, controller *controllers.Controller) string {
+func handleMessage(
+	msg tgbotapi.MessageConfig,
+	bot *tgbotapi.BotAPI,
+	updates tgbotapi.UpdatesChannel,
+	chatId int64) string {
+
+	if _, err := bot.Send(msg); err != nil {
+		panic(err)
+	}
+	text := ""
+	for update := range updates {
+		if update.Message == nil {
+			continue
+		}
+
+		text = update.Message.Text
+	}
+	return text
+}
+
+func singUp(bot *tgbotapi.BotAPI, chatId int64, updates tgbotapi.UpdatesChannel, controller *controllers.Controller) string {
 	var reply = ""
 
 	msg := tgbotapi.NewMessage(chatId, "Введите свою фамилию")
-	if _, err := bot.Send(msg); err != nil {
-		panic(err)
-	}
-	surname := update.Message.Text
+	surname := handleMessage(msg, bot, updates, chatId)
 
 	msg = tgbotapi.NewMessage(chatId, "Введите свою специальность")
-	if _, err := bot.Send(msg); err != nil {
-		panic(err)
-	}
-	speciality := update.Message.Text
+	speciality := handleMessage(msg, bot, updates, chatId)
 
 	msg = tgbotapi.NewMessage(chatId, "Введите свою роль")
-	if _, err := bot.Send(msg); err != nil {
-		panic(err)
-	}
-	role := update.Message.Text
+	role := handleMessage(msg, bot, updates, chatId)
 
 	newDoctor := &auth_dto.NewDoctor{
 		TokenId:    strconv.FormatInt(chatId, 10),
@@ -57,36 +75,53 @@ func singUp(bot *tgbotapi.BotAPI, chatId int64, update tgbotapi.Update, controll
 	return reply
 }
 
-func handleBot(client *ent.Client,
+func handleBot(
 	controller *controllers.Controller,
 	updates tgbotapi.UpdatesChannel,
 	bot *tgbotapi.BotAPI) {
 
 	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
+		if update.Message != nil {
 
-		ChatId := update.Message.Chat.ID
-		msg := tgbotapi.NewMessage(ChatId, update.Message.Text)
-		text := update.Message.Text
-		reply := ""
+			ChatId := update.Message.Chat.ID
+			msg := tgbotapi.NewMessage(ChatId, update.Message.Text)
 
-		if text == "/singup" {
-			reply = singUp(bot, ChatId, update, controller)
-		} else {
-			reply = "Ты кринж"
-		}
+			switch update.Message.Command() {
+			case "help":
+				msg.Text = "Type /singup"
+			case "singup":
+				msg.Text = singUp(bot, ChatId, updates, controller)
+			case "status":
+				msg.Text = "I'm ok."
+			case "open":
+				msg.ReplyMarkup = numericKeyboard
+			case "close":
+				msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+			default:
+				msg.Text = "Ты кринж"
+			}
 
-		msg = tgbotapi.NewMessage(ChatId, reply)
+			if _, err := bot.Send(msg); err != nil {
+				panic(err)
+			}
+		} else if update.CallbackQuery != nil {
+			// Respond to the callback query, telling Telegram to show the user
+			// a message with the data received.
+			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
+			if _, err := bot.Request(callback); err != nil {
+				panic(err)
+			}
 
-		if _, err := bot.Send(msg); err != nil {
-			panic(err)
+			// And finally, send a message containing the data received.
+			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Data)
+			if _, err := bot.Send(msg); err != nil {
+				panic(err)
+			}
 		}
 	}
 }
 
-func startBot(client *ent.Client, controller *controllers.Controller) {
+func startBot(controller *controllers.Controller) {
 	dotenv := goDotEnvVariable("TELEGRAM_APITOKEN")
 
 	bot, err := tgbotapi.NewBotAPI(dotenv)
@@ -99,5 +134,5 @@ func startBot(client *ent.Client, controller *controllers.Controller) {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	handleBot(client, controller, updates, bot)
+	handleBot(controller, updates, bot)
 }
