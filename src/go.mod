@@ -4,8 +4,10 @@ go 1.20
 
 require (
 	entgo.io/ent v0.12.0
+	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.8
 	github.com/stretchr/testify v1.8.2
 	go.uber.org/fx v1.19.2
