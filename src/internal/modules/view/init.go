@@ -2,7 +2,6 @@ package view
 
 import (
 	"context"
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 	"hospital/internal/modules/db/ent"
@@ -21,21 +20,39 @@ func goDotEnvVariable(key string) string {
 	return os.Getenv(key)
 }
 
-func singUp(chatId int64, controller *controllers.Controller) string {
+func singUp(bot *tgbotapi.BotAPI, chatId int64, update tgbotapi.Update, controller *controllers.Controller) string {
 	var reply = ""
+
+	msg := tgbotapi.NewMessage(chatId, "Введите свою фамилию")
+	if _, err := bot.Send(msg); err != nil {
+		panic(err)
+	}
+	surname := update.Message.Text
+
+	msg = tgbotapi.NewMessage(chatId, "Введите свою специальность")
+	if _, err := bot.Send(msg); err != nil {
+		panic(err)
+	}
+	speciality := update.Message.Text
+
+	msg = tgbotapi.NewMessage(chatId, "Введите свою роль")
+	if _, err := bot.Send(msg); err != nil {
+		panic(err)
+	}
+	role := update.Message.Text
+
 	newDoctor := &auth_dto.NewDoctor{
 		TokenId:    strconv.FormatInt(chatId, 10),
-		Surname:    "Kovel",
-		Speciality: "Психотерапевт",
-		Role:       "Глав врач",
+		Surname:    surname,
+		Speciality: speciality,
+		Role:       role,
 	}
-	doctor, err := controller.SingUp(context.Background(), newDoctor)
+	_, err := controller.SingUp(context.Background(), newDoctor)
 	if err != nil {
-		reply = "Already registrated"
+		reply = "Уже зарегистрированы"
+		return reply
 	}
-
-	fmt.Println(doctor)
-	reply = doctor.Surname
+	reply = "Зарегистрирован"
 
 	return reply
 }
@@ -56,7 +73,7 @@ func handleBot(client *ent.Client,
 		reply := ""
 
 		if text == "/singup" {
-			reply = singUp(ChatId, controller)
+			reply = singUp(bot, ChatId, update, controller)
 		} else {
 			reply = "Ты кринж"
 		}
