@@ -8,6 +8,9 @@ import (
 type Config struct {
 	Secret string `envconfig:"SECRET"`
 
+	DBDriver     string `envconfig:"DB_DRIVER" default:"postgres"`
+	DBConnection string `envconfig:"DB_CONN_STRING"`
+
 	DBUser string `envconfig:"DB_USER"`
 	DBPass string `envconfig:"DB_PASS"`
 	DBHost string `envconfig:"DB_HOST" default:"db"`
@@ -22,8 +25,14 @@ type Config struct {
 
 func NewConfig(app app.App, logger *zap.Logger, logLevel zap.AtomicLevel) (Config, error) {
 	config := Config{
-		AutoMigrate: true,
-		Secret:      "1",
+		DBDriver:     "postgres",
+		DBPass:       "postgres",
+		DBUser:       "postgres",
+		DBPort:       "5432",
+		DBHost:       "localhost",
+		DBConnection: "host=localhost port=5432 user=postgres dbname=hospital password=postgres sslmode=disable",
+		AutoMigrate:  true,
+		Secret:       "1",
 	}
 
 	logger.Info("Configurated", zap.Any("config", config))

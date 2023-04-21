@@ -1,7 +1,6 @@
 package db
 
 import (
-	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"errors"
 	"fmt"
@@ -19,13 +18,10 @@ import (
 
 func connectDB(cfg config.Config, logger *zap.Logger) (*ent.Client, error) {
 
-	connString := "host=localhost port=5432 user=postgres dbname=hospital password=postgres sslmode=disable"
-
-	db, err := sql.Open(dialect.Postgres, connString)
+	db, err := sql.Open(cfg.DBDriver, cfg.DBConnection)
 	if err != nil {
-		return nil, fmt.Errorf("ОШИБКА ПОДКЛЮЧЕНИЯ К БД: %w", err)
+		return nil, fmt.Errorf("ошибка при подключении к БД: %w", err)
 	}
-
 	logLevel := trace_driver.Warn
 	if cfg.TraceSQLCommands {
 		logLevel = trace_driver.Info
