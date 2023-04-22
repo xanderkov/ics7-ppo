@@ -13,9 +13,9 @@ import (
 
 var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("singup", "/singup"),
-		tgbotapi.NewInlineKeyboardButtonData("help", "/help"),
-		tgbotapi.NewInlineKeyboardButtonData("status", "/status"),
+		tgbotapi.NewInlineKeyboardButtonData("singup", "singup"),
+		tgbotapi.NewInlineKeyboardButtonData("help", "help"),
+		tgbotapi.NewInlineKeyboardButtonData("status", "status"),
 	),
 )
 
@@ -27,37 +27,14 @@ func goDotEnvVariable(key string) string {
 	return os.Getenv(key)
 }
 
-func handleMessage(
-	msg tgbotapi.MessageConfig,
-	bot *tgbotapi.BotAPI,
-	updates tgbotapi.UpdatesChannel,
-	chatId int64) string {
-
-	if _, err := bot.Send(msg); err != nil {
-		panic(err)
-	}
-	text := ""
-	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
-
-		text = update.Message.Text
-	}
-	return text
-}
-
-func singUp(bot *tgbotapi.BotAPI, chatId int64, updates tgbotapi.UpdatesChannel, controller *controllers.Controller) string {
+func singUp(bot *tgbotapi.BotAPI, chatId int64, update tgbotapi.Update, controller *controllers.Controller) string {
 	var reply = ""
 
 	msg := tgbotapi.NewMessage(chatId, "Введите свою фамилию")
-	surname := handleMessage(msg, bot, updates, chatId)
-
+	update
 	msg = tgbotapi.NewMessage(chatId, "Введите свою специальность")
-	speciality := handleMessage(msg, bot, updates, chatId)
 
 	msg = tgbotapi.NewMessage(chatId, "Введите свою роль")
-	role := handleMessage(msg, bot, updates, chatId)
 
 	newDoctor := &auth_dto.NewDoctor{
 		TokenId:    strconv.FormatInt(chatId, 10),
@@ -86,7 +63,7 @@ func handleBot(
 			ChatId := update.Message.Chat.ID
 			msg := tgbotapi.NewMessage(ChatId, update.Message.Text)
 
-			switch update.Message.Command() {
+			switch update.Message.Text {
 			case "help":
 				msg.Text = "Type /singup"
 			case "singup":
@@ -100,7 +77,6 @@ func handleBot(
 			default:
 				msg.Text = "Ты кринж"
 			}
-
 			if _, err := bot.Send(msg); err != nil {
 				panic(err)
 			}
