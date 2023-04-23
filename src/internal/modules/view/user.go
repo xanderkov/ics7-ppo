@@ -16,3 +16,9 @@ func addNextMessages(message string, user *UsersMessage, chatId int64) {
 	user.NextMessages = append(user.NextMessages, msg.Text)
 
 }
+
+func printNewMessage(nextMessages []string) (string, []string) {
+	var msg string
+	msg, nextMessages = popElemFront(nextMessages)
+	return msg, nextMessages
+}

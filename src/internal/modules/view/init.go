@@ -2,25 +2,29 @@ package view
 
 import (
 	"context"
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
 	"hospital/internal/modules/view/controllers"
 	"strconv"
 )
 
-var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
-	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("singup", "singup"),
-		tgbotapi.NewInlineKeyboardButtonData("help", "help"),
-		tgbotapi.NewInlineKeyboardButtonData("status", "status"),
+var numericKeyboard = tgbotapi.NewReplyKeyboard(
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Зарегестрироваться"),
+		tgbotapi.NewKeyboardButton("Помощь"),
+		tgbotapi.NewKeyboardButton("Просмотреть данные о себе"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Удалить пациента"),
+		tgbotapi.NewKeyboardButton("Добавить пациента"),
+		tgbotapi.NewKeyboardButton("Посмотреть своих пациентов"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Найти палату по номеру"),
+		tgbotapi.NewKeyboardButton("Вывести все палаты"),
 	),
 )
-
-func printNewMessage(nextMessages []string) (string, []string) {
-	var msg string
-	msg, nextMessages = popElemFront(nextMessages)
-	return msg, nextMessages
-}
 
 func singUp(chatId int64, user *UsersMessage) string {
 	var msg string
@@ -29,6 +33,25 @@ func singUp(chatId int64, user *UsersMessage) string {
 	addNextMessages("Введите свою роль", user, chatId)
 	msg, user.NextMessages = printNewMessage(user.NextMessages)
 	return msg
+}
+
+func endSingUp(user *UsersMessage, chatId int64, controller *controllers.Controller) string {
+	var reply string
+
+	newDoctor := &auth_dto.NewDoctor{
+		TokenId:    strconv.FormatInt(chatId, 10),
+		Surname:    user.UserMessages[0],
+		Speciality: user.UserMessages[1],
+		Role:       user.UserMessages[2],
+	}
+	_, err := controller.SingUp(context.Background(), newDoctor)
+	if err != nil {
+		reply = "Уже зарегистрированы"
+		return reply
+	}
+	reply = "Зарегистрирован"
+
+	return reply
 }
 
 func handleUsers(
@@ -51,32 +74,15 @@ func handleUsers(
 	return msg, Users
 }
 
-func endSingUp(user *UsersMessage, chatId int64, controller *controllers.Controller) string {
-	var reply string
-
-	newDoctor := &auth_dto.NewDoctor{
-		TokenId:    strconv.FormatInt(chatId, 10),
-		Surname:    user.UserMessages[0],
-		Speciality: user.UserMessages[1],
-		Role:       user.UserMessages[2],
-	}
-	_, err := controller.SingUp(context.Background(), newDoctor)
-	if err != nil {
-		reply = "Уже зарегистрированы"
-		return reply
-	}
-	reply = "Зарегистрирован"
-
-	return reply
+func getInfoAboutDoctor(id int64) string {
+	msg := fmt.Sprintf("Абоба")
+	return msg
 }
 
 func handleBot(
 	controller *controllers.Controller,
 	updates tgbotapi.UpdatesChannel,
 	bot *tgbotapi.BotAPI) {
-
-	// ToDO:Сделать массив юзеров (это должна быть структура)
-	// добавить обработку этого массива и в зависимости от поля запросы делать выводы.
 
 	var Users []UsersMessage
 
@@ -91,12 +97,12 @@ func handleBot(
 			} else {
 				switch update.Message.Text {
 				case "help":
-					msg.Text = "Type /singup"
+					msg.Text = "Напишите singup"
 				case "singup":
 					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
 					msg.Text = singUp(ChatId, &Users[len(Users)-1])
-				case "status":
-					msg.Text = "I'm ok."
+				case "Просмотреть данные о себе":
+					msg.Text = getInfoAboutDoctor(ChatId)
 				case "open":
 					msg.ReplyMarkup = numericKeyboard
 				case "close":
