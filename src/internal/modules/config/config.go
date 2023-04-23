@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/kelseyhightower/envconfig"
 	"go.uber.org/zap"
 	"hospital/internal/modules/app"
 )
@@ -24,20 +25,15 @@ type Config struct {
 }
 
 func NewConfig(app app.App, logger *zap.Logger, logLevel zap.AtomicLevel) (Config, error) {
-	config := Config{
-		DBDriver:     "postgres",
-		DBPass:       "postgres",
-		DBUser:       "postgres",
-		DBPort:       "5432",
-		DBHost:       "localhost",
-		DBConnection: "host=localhost port=5432 user=postgres dbname=hospital password=postgres sslmode=disable",
-		AutoMigrate:  true,
-		Secret:       "1",
+	var config Config
+	err := envconfig.Process("", &config)
+	if err != nil {
+		return Config{}, err
 	}
 
 	logger.Info("Configurated", zap.Any("config", config))
 
-	err := logLevel.UnmarshalText([]byte(config.LogLevel))
+	err = logLevel.UnmarshalText([]byte(config.LogLevel))
 	if err != nil {
 		return Config{}, err
 	}

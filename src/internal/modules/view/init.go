@@ -31,7 +31,11 @@ func singUp(chatId int64, user *UsersMessage) string {
 	return msg
 }
 
-func handleUsers(Users []UsersMessage, chatId int64, userMessage string, controller *controllers.Controller) string {
+func handleUsers(
+	Users []UsersMessage, chatId int64,
+	userMessage string,
+	controller *controllers.Controller) (string, []UsersMessage) {
+
 	var msg string
 	for i, u := range Users {
 		if u.ChatId == chatId {
@@ -40,10 +44,11 @@ func handleUsers(Users []UsersMessage, chatId int64, userMessage string, control
 				msg, Users[i].NextMessages = printNewMessage(u.NextMessages)
 			} else {
 				msg = endSingUp(&Users[i], chatId, controller)
+				Users = Users[:i+copy(Users[i:], Users[i+1:])]
 			}
 		}
 	}
-	return msg
+	return msg, Users
 }
 
 func endSingUp(user *UsersMessage, chatId int64, controller *controllers.Controller) string {
@@ -82,7 +87,7 @@ func handleBot(
 			msg := tgbotapi.NewMessage(ChatId, update.Message.Text)
 
 			if len(Users) > 0 {
-				msg.Text = handleUsers(Users, ChatId, update.Message.Text, controller)
+				msg.Text, Users = handleUsers(Users, ChatId, update.Message.Text, controller)
 			} else {
 				switch update.Message.Text {
 				case "help":
