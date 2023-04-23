@@ -3,11 +3,8 @@ package view
 import (
 	"context"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/joho/godotenv"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
 	"hospital/internal/modules/view/controllers"
-	"log"
-	"os"
 	"strconv"
 )
 
@@ -19,37 +16,30 @@ var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 	),
 )
 
-func goDotEnvVariable(key string) string {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-	return os.Getenv(key)
+func printNewMessage(nextMessages []string) (string, []string) {
+	var msg string
+	msg, nextMessages = popElemFront(nextMessages)
+	return msg, nextMessages
 }
 
 func singUp(chatId int64, user *UsersMessage) string {
+	var msg string
 	addNextMessages("Введите свою фамилию", user, chatId)
 	addNextMessages("Введите свою специальность", user, chatId)
 	addNextMessages("Введите свою роль", user, chatId)
-	msg := printNewMessage(user.NextMessages)
-	return msg
-}
-
-func printNewMessage(nextMessages []string) string {
-	msg := nextMessages[0]
-	nextMessages = remove(nextMessages, 0)
+	msg, user.NextMessages = printNewMessage(user.NextMessages)
 	return msg
 }
 
 func handleUsers(Users []UsersMessage, chatId int64, userMessage string, controller *controllers.Controller) string {
 	var msg string
-	for _, u := range Users {
+	for i, u := range Users {
 		if u.ChatId == chatId {
-			u.UserMessages = append(u.UserMessages, userMessage)
+			Users[i].UserMessages = append(Users[i].UserMessages, userMessage)
 			if len(u.NextMessages) > 0 {
-				msg = printNewMessage(u.NextMessages)
+				msg, Users[i].NextMessages = printNewMessage(u.NextMessages)
 			} else {
-				msg = endSingUp(&u, chatId, controller)
+				msg = endSingUp(&Users[i], chatId, controller)
 			}
 		}
 	}
