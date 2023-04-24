@@ -75,8 +75,15 @@ func handleUsers(
 	return msg, Users
 }
 
-func getInfoAboutDoctor(id int64) string {
-	msg := fmt.Sprintf("Пустышка")
+func getInfoAboutDoctor(id int64, controller *controllers.Controller) string {
+
+	doctor, err := controller.DoctorToken(context.Background(), strconv.FormatInt(id, 10))
+	if err != nil {
+		msg := "Вы не зарегистрированы"
+		return msg
+	}
+	msg := fmt.Sprintf("Фамилия: %s \nСпециальность: %s \nРоль: %s \n",
+		doctor.Surname, doctor.Speciality, doctor.Role)
 	return msg
 }
 
@@ -128,7 +135,7 @@ func handleBot(
 					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
 					msg.Text = singUp(ChatId, &Users[len(Users)-1])
 				case "Просмотреть данные о себе":
-					msg.Text = getInfoAboutDoctor(ChatId)
+					msg.Text = getInfoAboutDoctor(ChatId, controller)
 				case "Удалить пациента":
 					msg.Text = deletePatient(ChatId)
 				case "Добавить пациента":

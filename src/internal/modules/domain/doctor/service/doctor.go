@@ -13,6 +13,7 @@ type IDoctorRepo interface {
 	Create(ctx context.Context, dtm *dto.CreateDoctor) (*dto.Doctor, error)
 	Update(ctx context.Context, id int, dtm *dto.UpdateDoctor) (*dto.Doctor, error)
 	Delete(ctx context.Context, id int) error
+	GetByTokenId(ctx context.Context, token string) (*dto.Doctor, error)
 }
 
 type DoctorService struct {
@@ -43,4 +44,8 @@ func (r *DoctorService) Update(ctx context.Context, id int, dtm *dto.UpdateDocto
 
 func (r *DoctorService) Delete(ctx context.Context, id int) error {
 	return r.repo.Delete(ctx, id)
+}
+
+func (r *DoctorService) GetByTokenId(ctx context.Context, token string) (*dto.Doctor, error) {
+	return r.repo.GetByTokenId(ctx, token)
 }

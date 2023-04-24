@@ -4,6 +4,7 @@ import (
 	"context"
 	"hospital/internal/modules/db"
 	"hospital/internal/modules/db/ent"
+	"hospital/internal/modules/db/ent/doctor"
 	"hospital/internal/modules/domain/doctor/dto"
 )
 
@@ -27,7 +28,7 @@ func (r *DoctorRepo) GetById(ctx context.Context, id int) (*dto.Doctor, error) {
 }
 
 func (r *DoctorRepo) GetByTokenId(ctx context.Context, token string) (*dto.Doctor, error) {
-	Doctor, err := r.client.Doctor.Get(ctx, 0)
+	Doctor, err := r.client.Doctor.Query().Where(doctor.TokenIdEQ(token)).Only(ctx)
 	if err != nil {
 		return nil, db.WrapError(err)
 	}
