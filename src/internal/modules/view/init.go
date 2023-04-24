@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"hospital/internal/modules/config"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
 	"hospital/internal/modules/view/controllers"
 	"strconv"
@@ -163,8 +164,8 @@ func handleBot(
 	}
 }
 
-func startBot(controller *controllers.Controller) {
-	dotenv := goDotEnvVariable("TELEGRAM_APITOKEN")
+func startBot(controller *controllers.Controller, cfg config.Config) {
+	dotenv := cfg.TelegramToken
 
 	bot, err := tgbotapi.NewBotAPI(dotenv)
 	if err != nil {

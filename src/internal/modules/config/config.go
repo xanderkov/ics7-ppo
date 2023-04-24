@@ -22,10 +22,13 @@ type Config struct {
 	AutoMigrate      bool   `envconfig:"AUTO_MIGRATE" default:"false"`
 	LogLevel         string `envconfig:"LOG_LEVEL" default:"info" validate:"oneof=debug info warn error dpanic panic fatal"`
 	TraceSQLCommands bool
+
+	TelegramToken string `envconfig:"TELEGRAM_APITOKEN"`
 }
 
 func NewConfig(app app.App, logger *zap.Logger, logLevel zap.AtomicLevel) (Config, error) {
 	var config Config
+
 	err := envconfig.Process("", &config)
 	if err != nil {
 		return Config{}, err
