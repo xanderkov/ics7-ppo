@@ -75,7 +75,32 @@ func handleUsers(
 }
 
 func getInfoAboutDoctor(id int64) string {
-	msg := fmt.Sprintf("Абоба")
+	msg := fmt.Sprintf("Пустышка")
+	return msg
+}
+
+func deletePatient(id int64) string {
+	msg := fmt.Sprintf("Пустышка")
+	return msg
+}
+
+func addPatient(id int64) string {
+	msg := fmt.Sprintf("Пустышка")
+	return msg
+}
+
+func getInfoAboutPatients(id int64) string {
+	msg := fmt.Sprintf("Пустышка")
+	return msg
+}
+
+func printByNum(id int64) string {
+	msg := fmt.Sprintf("Пустышка")
+	return msg
+}
+
+func printAllRooms(id int64) string {
+	msg := fmt.Sprintf("Пустышка")
 	return msg
 }
 
@@ -96,19 +121,29 @@ func handleBot(
 				msg.Text, Users = handleUsers(Users, ChatId, update.Message.Text, controller)
 			} else {
 				switch update.Message.Text {
-				case "help":
-					msg.Text = "Напишите singup"
-				case "singup":
+				case "Помощь":
+					msg.Text = "Напишите: Зарегестрироваться или open"
+				case "Зарегестрироваться":
 					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
 					msg.Text = singUp(ChatId, &Users[len(Users)-1])
 				case "Просмотреть данные о себе":
 					msg.Text = getInfoAboutDoctor(ChatId)
+				case "Удалить пациента":
+					msg.Text = deletePatient(ChatId)
+				case "Добавить пациента":
+					msg.Text = addPatient(ChatId)
+				case "Посмотреть своих пациентов":
+					msg.Text = getInfoAboutPatients(ChatId)
+				case "Найти палату по номеру":
+					msg.Text = printByNum(ChatId)
+				case "Вывести все палаты":
+					msg.Text = printAllRooms(ChatId)
 				case "open":
 					msg.ReplyMarkup = numericKeyboard
 				case "close":
 					msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 				default:
-					msg.Text = "Ты кринж"
+					msg.Text = "Команда не найдена, напишите Помощь"
 				}
 			}
 
@@ -116,14 +151,10 @@ func handleBot(
 				panic(err)
 			}
 		} else if update.CallbackQuery != nil {
-			// Respond to the callback query, telling Telegram to show the user
-			// a message with the data received.
 			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
 			if _, err := bot.Request(callback); err != nil {
 				panic(err)
 			}
-
-			// And finally, send a message containing the data received.
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Data)
 			if _, err := bot.Send(msg); err != nil {
 				panic(err)
