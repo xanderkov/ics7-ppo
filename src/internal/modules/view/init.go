@@ -76,8 +76,8 @@ func handleUsers(
 }
 
 func getInfoAboutDoctor(id int64, controller *controllers.Controller) string {
-
-	doctor, err := controller.DoctorToken(context.Background(), strconv.FormatInt(id, 10))
+	token := strconv.FormatInt(id, 10)
+	doctor, err := controller.DoctorToken(context.Background(), token)
 	if err != nil {
 		msg := "Вы не зарегистрированы"
 		return msg
