@@ -19,7 +19,7 @@ type Config struct {
 	DBName string `envconfig:"DB_NAME" default:"main"`
 
 	SQLSlowThreshold int    `envconfig:"SQL_SLOW_THRESHOLD" default:"600"`
-	AutoMigrate      bool   `envconfig:"AUTO_MIGRATE" default:"false"`
+	AutoMigrate      bool   `envconfig:"AUTO_MIGRATE" default:"true"`
 	LogLevel         string `envconfig:"LOG_LEVEL" default:"info" validate:"oneof=debug info warn error dpanic panic fatal"`
 	TraceSQLCommands bool
 
