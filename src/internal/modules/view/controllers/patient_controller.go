@@ -11,8 +11,8 @@ func (r *Controller) Patient(ctx context.Context, id int) (*dto1.Patient, error)
 	return user, err
 }
 
-func (r *Controller) AddPatient(ctx context.Context, id int, patient *dto1.UpdatePatient) (*dto1.Patient, error) {
-	user, err := r.patientService.Update(ctx, id, patient)
+func (r *Controller) AddPatient(ctx context.Context, patient *dto1.CreatePatient) (*dto1.Patient, error) {
+	user, err := r.patientService.Create(ctx, patient)
 
 	return user, err
 }

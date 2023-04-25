@@ -6,6 +6,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"hospital/internal/modules/config"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
+	patient_dto "hospital/internal/modules/domain/patient/dto"
 	"hospital/internal/modules/view/controllers"
 	"strconv"
 )
@@ -55,6 +56,32 @@ func endSingUp(user *UsersMessage, chatId int64, controller *controllers.Control
 	return reply
 }
 
+func endAddPatient(user *UsersMessage, controller *controllers.Controller) string {
+	var reply string
+	height, _ := strconv.Atoi(user.UserMessages[3])
+	weight, _ := strconv.ParseFloat(user.UserMessages[4], 64)
+	roomNumber, _ := strconv.Atoi(user.UserMessages[5])
+	degreeOfDanger, _ := strconv.Atoi(user.UserMessages[6])
+
+	newPatient := &patient_dto.CreatePatient{
+		Surname:        user.UserMessages[0],
+		Name:           user.UserMessages[1],
+		Patronymic:     user.UserMessages[2],
+		Height:         height,
+		Weight:         weight,
+		RoomNumber:     roomNumber,
+		DegreeOfDanger: degreeOfDanger,
+	}
+	_, err := controller.AddPatient(context.Background(), newPatient)
+	if err != nil {
+		reply = "Ошбика добавления"
+		return reply
+	}
+	reply = "Добавлен"
+
+	return reply
+}
+
 func handleUsers(
 	Users []UsersMessage, chatId int64,
 	userMessage string,
@@ -67,8 +94,14 @@ func handleUsers(
 			if len(u.NextMessages) > 0 {
 				msg, Users[i].NextMessages = printNewMessage(u.NextMessages)
 			} else {
-				msg = endSingUp(&Users[i], chatId, controller)
+				switch u.Command {
+				case "Зарегестрироваться":
+					msg = endSingUp(&Users[i], chatId, controller)
+				case "Добавить пациента":
+					msg = endAddPatient(&Users[i], controller)
+				}
 				Users = Users[:i+copy(Users[i:], Users[i+1:])]
+
 			}
 		}
 	}
@@ -92,8 +125,16 @@ func deletePatient(id int64) string {
 	return msg
 }
 
-func addPatient(id int64) string {
-	msg := fmt.Sprintf("Пустышка")
+func addPatient(chatId int64, user *UsersMessage) string {
+	var msg string
+	addNextMessages("Введите фамилию пациента", user, chatId)
+	addNextMessages("Введите имя пациента", user, chatId)
+	addNextMessages("Введите отчество пациента", user, chatId)
+	addNextMessages("Введите Рост пациента", user, chatId)
+	addNextMessages("Введите Вес пациента", user, chatId)
+	addNextMessages("Введите номер комнаты пациента", user, chatId)
+	addNextMessages("Введите степень опасности пациента", user, chatId)
+	msg, user.NextMessages = printNewMessage(user.NextMessages)
 	return msg
 }
 
@@ -139,7 +180,8 @@ func handleBot(
 				case "Удалить пациента":
 					msg.Text = deletePatient(ChatId)
 				case "Добавить пациента":
-					msg.Text = addPatient(ChatId)
+					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
+					msg.Text = addPatient(ChatId, &Users[len(Users)-1])
 				case "Посмотреть своих пациентов":
 					msg.Text = getInfoAboutPatients(ChatId)
 				case "Найти палату по номеру":

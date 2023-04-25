@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8fccaead-eb7c-4f97-83d5-c12d3cc55144" name="Changes" comment="WTF" />
+    <list default="true" id="8fccaead-eb7c-4f97-83d5-c12d3cc55144" name="Changes" comment="workspace added">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/internal/modules/view/controllers/patient_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/view/controllers/patient_controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/internal/modules/view/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/view/init.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -197,7 +202,8 @@
     <MESSAGE value="Fixed added user deletion" />
     <MESSAGE value="Added keyboard buttons" />
     <MESSAGE value="WTF" />
-    <option name="LAST_COMMIT_MESSAGE" value="WTF" />
+    <MESSAGE value="workspace added" />
+    <option name="LAST_COMMIT_MESSAGE" value="workspace added" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -217,7 +223,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/src/internal/modules/view/init.go</url>
-          <line>79</line>
+          <line>112</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
