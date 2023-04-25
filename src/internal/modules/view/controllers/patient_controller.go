@@ -13,6 +13,10 @@ func (r *Controller) Patient(ctx context.Context, id int) (*dto1.Patient, error)
 
 func (r *Controller) AddPatient(ctx context.Context, patient *dto1.CreatePatient) (*dto1.Patient, error) {
 	user, err := r.patientService.Create(ctx, patient)
+	return user, err
+}
 
+func (r *Controller) GetAllPatients(ctx context.Context) (dto1.Patients, error) {
+	user, err := r.patientService.List(ctx)
 	return user, err
 }

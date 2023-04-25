@@ -7,6 +7,7 @@ import (
 	"hospital/internal/modules/config"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
 	patient_dto "hospital/internal/modules/domain/patient/dto"
+	room_dto "hospital/internal/modules/domain/room/dto"
 	"hospital/internal/modules/view/controllers"
 	"strconv"
 )
@@ -25,6 +26,7 @@ var numericKeyboard = tgbotapi.NewReplyKeyboard(
 	tgbotapi.NewKeyboardButtonRow(
 		tgbotapi.NewKeyboardButton("Найти палату по номеру"),
 		tgbotapi.NewKeyboardButton("Вывести все палаты"),
+		tgbotapi.NewKeyboardButton("Добавить палату"),
 	),
 )
 
@@ -82,6 +84,30 @@ func endAddPatient(user *UsersMessage, controller *controllers.Controller) strin
 	return reply
 }
 
+func endAddRoom(user *UsersMessage, controller *controllers.Controller) string {
+	var reply string
+
+	num, _ := strconv.Atoi(user.UserMessages[0])
+	floor, _ := strconv.Atoi(user.UserMessages[1])
+	numberBeds, _ := strconv.Atoi(user.UserMessages[2])
+
+	newRoom := &room_dto.CreateRoom{
+		Num:            num,
+		Floor:          floor,
+		NumberBeds:     numberBeds,
+		TypeRoom:       user.UserMessages[3],
+		NumberPatients: 0,
+	}
+	_, err := controller.AddRoom(context.Background(), newRoom)
+	if err != nil {
+		reply = "Ошбика добавления комнаты"
+		return reply
+	}
+	reply = "Комната добалена!"
+
+	return reply
+}
+
 func handleUsers(
 	Users []UsersMessage, chatId int64,
 	userMessage string,
@@ -99,6 +125,8 @@ func handleUsers(
 					msg = endSingUp(&Users[i], chatId, controller)
 				case "Добавить пациента":
 					msg = endAddPatient(&Users[i], controller)
+				case "Добавить палату":
+					msg = endAddRoom(&Users[i], controller)
 				}
 				Users = Users[:i+copy(Users[i:], Users[i+1:])]
 
@@ -120,11 +148,6 @@ func getInfoAboutDoctor(id int64, controller *controllers.Controller) string {
 	return msg
 }
 
-func deletePatient(id int64) string {
-	msg := fmt.Sprintf("Пустышка")
-	return msg
-}
-
 func addPatient(chatId int64, user *UsersMessage) string {
 	var msg string
 	addNextMessages("Введите фамилию пациента", user, chatId)
@@ -138,18 +161,43 @@ func addPatient(chatId int64, user *UsersMessage) string {
 	return msg
 }
 
-func getInfoAboutPatients(id int64) string {
-	msg := fmt.Sprintf("Пустышка")
+func addRoom(chatId int64, user *UsersMessage) string {
+	var msg string
+	addNextMessages("Введите Номер палаты", user, chatId)
+	addNextMessages("Введите Этаж палаты", user, chatId)
+	addNextMessages("Введите Количетво кроватей палаты", user, chatId)
+	addNextMessages("Введите Тип палаты", user, chatId)
+	msg, user.NextMessages = printNewMessage(user.NextMessages)
 	return msg
 }
 
-func printByNum(id int64) string {
-	msg := fmt.Sprintf("Пустышка")
+func getInfoAboutPatients(id int64, controller *controllers.Controller) string {
+	var msg string = ""
+	patients, err := controller.GetAllPatients(context.Background())
+	if err != nil {
+		msg := "Ошбика запроса"
+		return msg
+	}
+
+	for i := range patients {
+		msg += fmt.Sprintf("ID %d \nФамилия: %s \nИмя: %s \nОтчество: %s \n",
+			patients[i].Id, patients[i].Surname, patients[i].Name, patients[i].Patronymic)
+	}
 	return msg
 }
 
-func printAllRooms(id int64) string {
-	msg := fmt.Sprintf("Пустышка")
+func printAllRooms(id int64, controller *controllers.Controller) string {
+	var msg string = ""
+	rooms, err := controller.GetAllRooms(context.Background())
+	if err != nil {
+		msg := "Ошбика запроса"
+		return msg
+	}
+
+	for i := range rooms {
+		msg += fmt.Sprintf("ID %d \nНомер: %d \nЭтаж: %d \nТип: %s \n",
+			rooms[i].Id, rooms[i].Num, rooms[i].Floor, rooms[i].TypeRoom)
+	}
 	return msg
 }
 
@@ -177,17 +225,16 @@ func handleBot(
 					msg.Text = singUp(ChatId, &Users[len(Users)-1])
 				case "Просмотреть данные о себе":
 					msg.Text = getInfoAboutDoctor(ChatId, controller)
-				case "Удалить пациента":
-					msg.Text = deletePatient(ChatId)
 				case "Добавить пациента":
 					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
 					msg.Text = addPatient(ChatId, &Users[len(Users)-1])
 				case "Посмотреть своих пациентов":
-					msg.Text = getInfoAboutPatients(ChatId)
-				case "Найти палату по номеру":
-					msg.Text = printByNum(ChatId)
+					msg.Text = getInfoAboutPatients(ChatId, controller)
 				case "Вывести все палаты":
-					msg.Text = printAllRooms(ChatId)
+					msg.Text = printAllRooms(ChatId, controller)
+				case "Добавить палату":
+					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
+					msg.Text = addRoom(ChatId, &Users[len(Users)-1])
 				case "open":
 					msg.ReplyMarkup = numericKeyboard
 				case "close":

@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8fccaead-eb7c-4f97-83d5-c12d3cc55144" name="Changes" comment="workspace added">
+    <list default="true" id="8fccaead-eb7c-4f97-83d5-c12d3cc55144" name="Changes" comment="Added add patient method">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/internal/modules/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/internal/modules/domain/room/dto/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/domain/room/dto/room.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/internal/modules/domain/room/repo/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/domain/room/repo/room.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/internal/modules/view/controllers/patient_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/view/controllers/patient_controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/internal/modules/view/controllers/room_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/view/controllers/room_controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/internal/modules/view/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/internal/modules/view/init.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -203,7 +206,8 @@
     <MESSAGE value="Added keyboard buttons" />
     <MESSAGE value="WTF" />
     <MESSAGE value="workspace added" />
-    <option name="LAST_COMMIT_MESSAGE" value="workspace added" />
+    <MESSAGE value="Added add patient method" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added add patient method" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -223,28 +227,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/src/internal/modules/view/init.go</url>
-          <line>112</line>
+          <line>139</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/src/internal/modules/db/db_connect.go</url>
-          <line>20</line>
-          <option name="timeStamp" value="16" />
+          <url>file://$PROJECT_DIR$/src/internal/modules/view/init.go</url>
+          <line>126</line>
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/src/internal/modules/config/config.go</url>
-          <line>29</line>
-          <option name="timeStamp" value="17" />
+          <url>file://$PROJECT_DIR$/src/internal/modules/view/init.go</url>
+          <line>127</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/src/internal/modules/db/db.go</url>
-          <line>26</line>
-          <option name="timeStamp" value="18" />
+          <url>file://$PROJECT_DIR$/src/internal/modules/view/init.go</url>
+          <line>205</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/src/internal/modules/db/db.go</url>
-          <line>25</line>
-          <option name="timeStamp" value="19" />
+          <url>file://$PROJECT_DIR$/src/internal/modules/domain/room/repo/room.go</url>
+          <line>44</line>
+          <option name="timeStamp" value="24" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
