@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"go.uber.org/zap"
 	"hospital/internal/modules/config"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
 	patient_dto "hospital/internal/modules/domain/patient/dto"
@@ -204,7 +205,8 @@ func printAllRooms(id int64, controller *controllers.Controller) string {
 func handleBot(
 	controller *controllers.Controller,
 	updates tgbotapi.UpdatesChannel,
-	bot *tgbotapi.BotAPI) {
+	bot *tgbotapi.BotAPI,
+	logger *zap.Logger) {
 
 	var Users []UsersMessage
 
@@ -213,6 +215,8 @@ func handleBot(
 
 			ChatId := update.Message.Chat.ID
 			msg := tgbotapi.NewMessage(ChatId, update.Message.Text)
+
+			logger.Info(msg.Text)
 
 			if len(Users) > 0 {
 				msg.Text, Users = handleUsers(Users, ChatId, update.Message.Text, controller)
@@ -241,10 +245,12 @@ func handleBot(
 					msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 				default:
 					msg.Text = "Команда не найдена, напишите Помощь"
+					logger.Warn("Неверная пользовательская комманда")
 				}
 			}
 
 			if _, err := bot.Send(msg); err != nil {
+				logger.Error("Ошибка запроса")
 				panic(err)
 			}
 		} else if update.CallbackQuery != nil {
@@ -260,7 +266,7 @@ func handleBot(
 	}
 }
 
-func startBot(controller *controllers.Controller, cfg config.Config) {
+func startBot(controller *controllers.Controller, cfg config.Config, logger *zap.Logger) {
 	dotenv := cfg.TelegramToken
 
 	bot, err := tgbotapi.NewBotAPI(dotenv)
@@ -273,5 +279,5 @@ func startBot(controller *controllers.Controller, cfg config.Config) {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	handleBot(controller, updates, bot)
+	handleBot(controller, updates, bot, logger)
 }
