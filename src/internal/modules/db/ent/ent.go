@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hospital/internal/modules/db/ent/disease"
 	"hospital/internal/modules/db/ent/doctor"
 	"hospital/internal/modules/db/ent/patient"
 	"hospital/internal/modules/db/ent/room"
@@ -75,6 +76,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
+			disease.Table: disease.ValidColumn,
 			doctor.Table:  doctor.ValidColumn,
 			patient.Table: patient.ValidColumn,
 			room.Table:    room.ValidColumn,

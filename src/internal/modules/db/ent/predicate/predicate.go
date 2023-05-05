@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Disease is the predicate function for disease builders.
+type Disease func(*sql.Selector)
+
 // Doctor is the predicate function for doctor builders.
 type Doctor func(*sql.Selector)
 

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hospital/internal/modules/db/ent/disease"
 	"hospital/internal/modules/db/ent/doctor"
 	"hospital/internal/modules/db/ent/patient"
 	"hospital/internal/modules/db/ent/room"
@@ -87,6 +88,25 @@ func (pc *PatientCreate) AddDoctor(d ...*Doctor) *PatientCreate {
 		ids[i] = d[i].ID
 	}
 	return pc.AddDoctorIDs(ids...)
+}
+
+// SetIllsID sets the "ills" edge to the Disease entity by ID.
+func (pc *PatientCreate) SetIllsID(id int) *PatientCreate {
+	pc.mutation.SetIllsID(id)
+	return pc
+}
+
+// SetNillableIllsID sets the "ills" edge to the Disease entity by ID if the given value is not nil.
+func (pc *PatientCreate) SetNillableIllsID(id *int) *PatientCreate {
+	if id != nil {
+		pc = pc.SetIllsID(*id)
+	}
+	return pc
+}
+
+// SetIlls sets the "ills" edge to the Disease entity.
+func (pc *PatientCreate) SetIlls(d *Disease) *PatientCreate {
+	return pc.SetIllsID(d.ID)
 }
 
 // Mutation returns the PatientMutation object of the builder.
@@ -228,6 +248,23 @@ func (pc *PatientCreate) createSpec() (*Patient, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.IllsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   patient.IllsTable,
+			Columns: []string{patient.IllsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(disease.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.disease_has = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

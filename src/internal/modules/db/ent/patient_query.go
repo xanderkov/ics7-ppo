@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql/driver"
 	"fmt"
+	"hospital/internal/modules/db/ent/disease"
 	"hospital/internal/modules/db/ent/doctor"
 	"hospital/internal/modules/db/ent/patient"
 	"hospital/internal/modules/db/ent/predicate"
@@ -26,6 +27,8 @@ type PatientQuery struct {
 	predicates []predicate.Patient
 	withRepo   *RoomQuery
 	withDoctor *DoctorQuery
+	withIlls   *DiseaseQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -99,6 +102,28 @@ func (pq *PatientQuery) QueryDoctor() *DoctorQuery {
 			sqlgraph.From(patient.Table, patient.FieldID, selector),
 			sqlgraph.To(doctor.Table, doctor.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, patient.DoctorTable, patient.DoctorPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryIlls chains the current query on the "ills" edge.
+func (pq *PatientQuery) QueryIlls() *DiseaseQuery {
+	query := (&DiseaseClient{config: pq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(patient.Table, patient.FieldID, selector),
+			sqlgraph.To(disease.Table, disease.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, patient.IllsTable, patient.IllsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
@@ -300,6 +325,7 @@ func (pq *PatientQuery) Clone() *PatientQuery {
 		predicates: append([]predicate.Patient{}, pq.predicates...),
 		withRepo:   pq.withRepo.Clone(),
 		withDoctor: pq.withDoctor.Clone(),
+		withIlls:   pq.withIlls.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
@@ -325,6 +351,17 @@ func (pq *PatientQuery) WithDoctor(opts ...func(*DoctorQuery)) *PatientQuery {
 		opt(query)
 	}
 	pq.withDoctor = query
+	return pq
+}
+
+// WithIlls tells the query-builder to eager-load the nodes that are connected to
+// the "ills" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PatientQuery) WithIlls(opts ...func(*DiseaseQuery)) *PatientQuery {
+	query := (&DiseaseClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withIlls = query
 	return pq
 }
 
@@ -405,12 +442,20 @@ func (pq *PatientQuery) prepareQuery(ctx context.Context) error {
 func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Patient, error) {
 	var (
 		nodes       = []*Patient{}
+		withFKs     = pq.withFKs
 		_spec       = pq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			pq.withRepo != nil,
 			pq.withDoctor != nil,
+			pq.withIlls != nil,
 		}
 	)
+	if pq.withIlls != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, patient.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Patient).scanValues(nil, columns)
 	}
@@ -439,6 +484,12 @@ func (pq *PatientQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pati
 		if err := pq.loadDoctor(ctx, query, nodes,
 			func(n *Patient) { n.Edges.Doctor = []*Doctor{} },
 			func(n *Patient, e *Doctor) { n.Edges.Doctor = append(n.Edges.Doctor, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := pq.withIlls; query != nil {
+		if err := pq.loadIlls(ctx, query, nodes, nil,
+			func(n *Patient, e *Disease) { n.Edges.Ills = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -531,6 +582,38 @@ func (pq *PatientQuery) loadDoctor(ctx context.Context, query *DoctorQuery, node
 		}
 		for kn := range nodes {
 			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (pq *PatientQuery) loadIlls(ctx context.Context, query *DiseaseQuery, nodes []*Patient, init func(*Patient), assign func(*Patient, *Disease)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Patient)
+	for i := range nodes {
+		if nodes[i].disease_has == nil {
+			continue
+		}
+		fk := *nodes[i].disease_has
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(disease.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "disease_has" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil

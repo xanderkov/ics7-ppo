@@ -37,6 +37,10 @@ func (r *DiseaseRepo) List(ctx context.Context) (dto.Diseases, error) {
 
 func (r *DiseaseRepo) Create(ctx context.Context, dtm *dto.CreateDisease) (*dto.Disease, error) {
 	Disease, err := r.client.Disease.Create().
+		SetName(dtm.Name).
+		SetDegreeOfDanger(dtm.DegreeOfDanger).
+		SetThreat(dtm.Threat).
+		Save(ctx)
 
 	if err != nil {
 		return nil, db.WrapError(err)
@@ -47,7 +51,10 @@ func (r *DiseaseRepo) Create(ctx context.Context, dtm *dto.CreateDisease) (*dto.
 
 func (r *DiseaseRepo) Update(ctx context.Context, id int, dtm *dto.UpdateDisease) (*dto.Disease, error) {
 	Disease, err := r.client.Disease.UpdateOneID(id).
-
+		SetName(dtm.Name).
+		SetDegreeOfDanger(dtm.DegreeOfDanger).
+		SetThreat(dtm.Threat).
+		Save(ctx)
 	if err != nil {
 		return nil, db.WrapError(err)
 	}
@@ -81,7 +88,7 @@ func ToDiseaseDTO(model *ent.Disease) *dto.Disease {
 		Id:             model.ID,
 		Name:           model.Name,
 		DegreeOfDanger: model.DegreeOfDanger,
-		Threat: model.Threat,
+		Threat:         model.Threat,
 	}
 }
 

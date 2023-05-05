@@ -30,6 +30,8 @@ const (
 	EdgeRepo = "repo"
 	// EdgeDoctor holds the string denoting the doctor edge name in mutations.
 	EdgeDoctor = "doctor"
+	// EdgeIlls holds the string denoting the ills edge name in mutations.
+	EdgeIlls = "ills"
 	// Table holds the table name of the patient in the database.
 	Table = "patients"
 	// RepoTable is the table that holds the repo relation/edge.
@@ -44,6 +46,13 @@ const (
 	// DoctorInverseTable is the table name for the Doctor entity.
 	// It exists in this package in order to avoid circular dependency with the "doctor" package.
 	DoctorInverseTable = "doctors"
+	// IllsTable is the table that holds the ills relation/edge.
+	IllsTable = "patients"
+	// IllsInverseTable is the table name for the Disease entity.
+	// It exists in this package in order to avoid circular dependency with the "disease" package.
+	IllsInverseTable = "diseases"
+	// IllsColumn is the table column denoting the ills relation/edge.
+	IllsColumn = "disease_has"
 )
 
 // Columns holds all SQL columns for patient fields.
@@ -58,6 +67,12 @@ var Columns = []string{
 	FieldDegreeOfDanger,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "patients"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"disease_has",
+}
+
 var (
 	// DoctorPrimaryKey and DoctorColumn2 are the table columns denoting the
 	// primary key for the doctor relation (M2M).
@@ -68,6 +83,11 @@ var (
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -137,6 +157,13 @@ func ByDoctor(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
 		sqlgraph.OrderByNeighborTerms(s, newDoctorStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByIllsField orders the results by ills field.
+func ByIllsField(field string, opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newIllsStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newRepoStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -149,5 +176,12 @@ func newDoctorStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DoctorInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, DoctorTable, DoctorPrimaryKey...),
+	)
+}
+func newIllsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(IllsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, IllsTable, IllsColumn),
 	)
 }

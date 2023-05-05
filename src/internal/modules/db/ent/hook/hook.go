@@ -8,6 +8,18 @@ import (
 	"hospital/internal/modules/db/ent"
 )
 
+// The DiseaseFunc type is an adapter to allow the use of ordinary
+// function as Disease mutator.
+type DiseaseFunc func(context.Context, *ent.DiseaseMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DiseaseFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DiseaseMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DiseaseMutation", m)
+}
+
 // The DoctorFunc type is an adapter to allow the use of ordinary
 // function as Doctor mutator.
 type DoctorFunc func(context.Context, *ent.DoctorMutation) (ent.Value, error)

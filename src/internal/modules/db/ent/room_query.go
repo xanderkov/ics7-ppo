@@ -412,6 +412,7 @@ func (rq *RoomQuery) loadContains(ctx context.Context, query *PatientQuery, node
 			init(nodes[i])
 		}
 	}
+	query.withFKs = true
 	query.Where(predicate.Patient(func(s *sql.Selector) {
 		s.Where(sql.InValues(room.ContainsColumn, fks...))
 	}))

@@ -34,6 +34,8 @@ func (Patient) Edges() []ent.Edge {
 			Required(),
 		edge.From("doctor", Doctor.Type).
 			Ref("treats"),
+		edge.From("ills", Disease.Type).
+			Ref("has").
+			Unique(),
 	}
-
 }

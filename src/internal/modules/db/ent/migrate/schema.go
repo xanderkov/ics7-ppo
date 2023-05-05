@@ -8,6 +8,19 @@ import (
 )
 
 var (
+	// DiseasesColumns holds the columns for the "diseases" table.
+	DiseasesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "threat", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "degree_of_danger", Type: field.TypeInt},
+	}
+	// DiseasesTable holds the schema information for the "diseases" table.
+	DiseasesTable = &schema.Table{
+		Name:       "diseases",
+		Columns:    DiseasesColumns,
+		PrimaryKey: []*schema.Column{DiseasesColumns[0]},
+	}
 	// DoctorsColumns holds the columns for the "doctors" table.
 	DoctorsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -31,6 +44,7 @@ var (
 		{Name: "height", Type: field.TypeInt},
 		{Name: "weight", Type: field.TypeFloat64},
 		{Name: "degree_of_danger", Type: field.TypeInt},
+		{Name: "disease_has", Type: field.TypeInt, Nullable: true},
 		{Name: "room_number", Type: field.TypeInt},
 	}
 	// PatientsTable holds the schema information for the "patients" table.
@@ -40,8 +54,14 @@ var (
 		PrimaryKey: []*schema.Column{PatientsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "patients_rooms_contains",
+				Symbol:     "patients_diseases_has",
 				Columns:    []*schema.Column{PatientsColumns[7]},
+				RefColumns: []*schema.Column{DiseasesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "patients_rooms_contains",
+				Columns:    []*schema.Column{PatientsColumns[8]},
 				RefColumns: []*schema.Column{RoomsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -89,6 +109,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		DiseasesTable,
 		DoctorsTable,
 		PatientsTable,
 		RoomsTable,
@@ -97,7 +118,8 @@ var (
 )
 
 func init() {
-	PatientsTable.ForeignKeys[0].RefTable = RoomsTable
+	PatientsTable.ForeignKeys[0].RefTable = DiseasesTable
+	PatientsTable.ForeignKeys[1].RefTable = RoomsTable
 	DoctorPatientTable.ForeignKeys[0].RefTable = DoctorsTable
 	DoctorPatientTable.ForeignKeys[1].RefTable = PatientsTable
 }
