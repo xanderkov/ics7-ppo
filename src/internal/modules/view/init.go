@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap"
 	"hospital/internal/modules/config"
 	auth_dto "hospital/internal/modules/domain/auth/dto"
+	disease_dto "hospital/internal/modules/domain/disease/dto"
 	patient_dto "hospital/internal/modules/domain/patient/dto"
 	room_dto "hospital/internal/modules/domain/room/dto"
 	"hospital/internal/modules/view/controllers"
@@ -28,6 +29,9 @@ var numericKeyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("Найти палату по номеру"),
 		tgbotapi.NewKeyboardButton("Вывести все палаты"),
 		tgbotapi.NewKeyboardButton("Добавить палату"),
+	),
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Добавить заболевание"),
 	),
 )
 
@@ -109,6 +113,26 @@ func endAddRoom(user *UsersMessage, controller *controllers.Controller) string {
 	return reply
 }
 
+func endAddDisease(user *UsersMessage, controller *controllers.Controller) string {
+	var reply string
+
+	degreeOfDanger, _ := strconv.Atoi(user.UserMessages[1])
+
+	newDisease := &disease_dto.CreateDisease{
+		Name:           user.UserMessages[0],
+		DegreeOfDanger: degreeOfDanger,
+		Threat:         user.UserMessages[2],
+	}
+	_, err := controller.AddDisease(context.Background(), newDisease)
+	if err != nil {
+		reply = "Ошбика добавления заболевания"
+		return reply
+	}
+	reply = "Заболевание добалено! еее"
+
+	return reply
+}
+
 func handleUsers(
 	Users []UsersMessage, chatId int64,
 	userMessage string,
@@ -128,6 +152,9 @@ func handleUsers(
 					msg = endAddPatient(&Users[i], controller)
 				case "Добавить палату":
 					msg = endAddRoom(&Users[i], controller)
+				case "Добавить заболевание":
+					msg = endAddDisease(&Users[i], controller)
+
 				}
 				Users = Users[:i+copy(Users[i:], Users[i+1:])]
 
@@ -168,6 +195,15 @@ func addRoom(chatId int64, user *UsersMessage) string {
 	addNextMessages("Введите Этаж палаты", user, chatId)
 	addNextMessages("Введите Количетво кроватей палаты", user, chatId)
 	addNextMessages("Введите Тип палаты", user, chatId)
+	msg, user.NextMessages = printNewMessage(user.NextMessages)
+	return msg
+}
+
+func addDisease(chatId int64, user *UsersMessage) string {
+	var msg string
+	addNextMessages("Введите заболевание", user, chatId)
+	addNextMessages("Введите степень опасности заболевания", user, chatId)
+	addNextMessages("Введите способ лечения", user, chatId)
 	msg, user.NextMessages = printNewMessage(user.NextMessages)
 	return msg
 }
@@ -239,6 +275,9 @@ func handleBot(
 				case "Добавить палату":
 					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
 					msg.Text = addRoom(ChatId, &Users[len(Users)-1])
+				case "Добавить заболевание":
+					Users = append(Users, UsersMessage{ChatId: ChatId, Command: update.Message.Text})
+					msg.Text = addDisease(ChatId, &Users[len(Users)-1])
 				case "open":
 					msg.ReplyMarkup = numericKeyboard
 				case "close":
