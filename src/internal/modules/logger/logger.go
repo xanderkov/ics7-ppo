@@ -9,7 +9,7 @@ import (
 )
 
 func NewLogger(app app.App) (*zap.Logger, zap.AtomicLevel, error) {
-	config := zap.NewDevelopmentConfig()
+	config := zap.NewDevelopmentConfig() // Стандартное local time
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	logger, err := config.Build()
 
