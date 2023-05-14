@@ -17,3 +17,17 @@
 ## ER
 
 ![er](lab-01/assets/ER.drawio.png)
+
+## Описание типа приложения и технологического стека
+
+Приложение **типа** телеграмм бот.
+
+Технологический стек: **Golang**, **PostgreSQL**, **ent**
+
+UML диаграмма бизнес логики: 
+
+![BL](lab-02/assets/UML-BL.drawio.png)
+
+UML компонента доступа к данным: 
+
+![BL](lab-02/assets/UML-BD.drawio.png) 
